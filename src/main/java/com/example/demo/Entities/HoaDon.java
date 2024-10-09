@@ -37,7 +37,14 @@ public class HoaDon {
     private String trangThai;
     @Column(name = "ghichu")
     private String ghiChu;
-//    @ManyToOne
-//    @JoinColumn(name = "id_phuongthuctt")
-//    private PhuongThucTt phuongThucTt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_phuongthuctt")
+    private PhuongThucTt phuongThucTt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_giamgia")
+    private GiamGia giamGia;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_taikhoan")
+    private TaiKhoan taiKhoan;
+
 }
