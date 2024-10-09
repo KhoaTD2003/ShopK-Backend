@@ -40,6 +40,7 @@ public class TaiKhoanService {
             TaiKhoan taiKhoan = optionalTaiKhoan.get();
             taiKhoan.setTenTaiKhoan(taiKhoanDetails.getTenTaiKhoan()); // Ví dụ: cập nhật tên
             taiKhoan.setMatKhau(taiKhoanDetails.getMatKhau());
+            taiKhoan.setRoLe(taiKhoanDetails.getRoLe());
             taiKhoan.setTrangThai(taiKhoanDetails.isTrangThai());
 
             // Cập nhật các thuộc tính khác của ChatLieu nếu có

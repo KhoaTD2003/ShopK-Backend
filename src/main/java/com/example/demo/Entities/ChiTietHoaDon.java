@@ -1,4 +1,4 @@
 package com.example.demo.Entities;
 
-public class DiaChi {
+public class ChiTietHoaDon {
 }
