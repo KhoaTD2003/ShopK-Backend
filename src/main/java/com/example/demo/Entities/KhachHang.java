@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.UUID;
 @Table(name = "KhachHang")
 @Entity
@@ -18,5 +19,17 @@ public class KhachHang {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
+    @Column(name = "makh")
+    private String maKH;
+    @Column(name = "hoten")
+    private  String hoTen;
+    @Column(name = "namsinh")
+    private Date namSinh;
+    @Column(name = "sdt")
+    private String soDT;
+    @Column(name = "email")
+    private String email;
+    @Column(name = "trangthai")
+    private String trangThai;
 
 }
