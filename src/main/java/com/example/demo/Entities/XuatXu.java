@@ -28,7 +28,7 @@ public class XuatXu {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "ma")
+    @Column(name = "ma", length = 255)  // Đặt độ dài tối đa cho cột ma là 255
     private String ma;
 
     @Column(name = "ten")
