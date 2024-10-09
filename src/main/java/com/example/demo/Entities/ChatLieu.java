@@ -19,4 +19,10 @@ public class ChatLieu {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
+
+    @Column(name = "ma")
+    private String ma;
+
+    @Column(name = "ten")
+    private String ten;
 }
