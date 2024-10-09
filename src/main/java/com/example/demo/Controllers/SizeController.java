@@ -1,4 +1,4 @@
-package com.example.demo.Controller;
+package com.example.demo.Controllers;
 
 import com.example.demo.Entities.Size;
 import com.example.demo.Services.SizeService;

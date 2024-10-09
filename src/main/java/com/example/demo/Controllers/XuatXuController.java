@@ -1,7 +1,8 @@
-package com.example.demo.Controller;
+package com.example.demo.Controllers;
 
 import com.example.demo.Entities.TheLoai;
-import com.example.demo.Services.TheLoaiService;
+import com.example.demo.Entities.XuatXu;
+import com.example.demo.Services.XuatXuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,32 +18,32 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/theloai")
-public class TheLoaiController {
+@RequestMapping("/api/xuatxu")
+public class XuatXuController {
 
     @Autowired
-    private TheLoaiService theLoaiService;
+    private XuatXuService xuatXuService;
 
     @GetMapping
-    public List<TheLoai> getAll() {
-        return this.theLoaiService.getAll();
+    public List<XuatXu> getAll() {
+        return this.xuatXuService.getAll();
     }
 
     @PostMapping
-    public ResponseEntity<TheLoai> add(@RequestBody TheLoai theLoai) {
-        TheLoai newTheLoai = this.theLoaiService.add(theLoai);
-        return ResponseEntity.ok(newTheLoai);
+    public ResponseEntity<XuatXu> add(@RequestBody XuatXu xuatXu) {
+        XuatXu newXuatXu = this.xuatXuService.add(xuatXu);
+        return ResponseEntity.ok(newXuatXu);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TheLoai> update(@PathVariable UUID id, @RequestBody TheLoai theLoaiDetail) {
-        TheLoai hang = this.theLoaiService.update(id, theLoaiDetail);
-        return ResponseEntity.ok(hang);
+    public ResponseEntity<XuatXu> update(@PathVariable UUID id, @RequestBody XuatXu xuatXuDetail) {
+        XuatXu xuatXu = this.xuatXuService.update(id, xuatXuDetail);
+        return ResponseEntity.ok(xuatXu);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        this.theLoaiService.delete(id);
+        this.xuatXuService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

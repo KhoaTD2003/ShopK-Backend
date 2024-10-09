@@ -1,4 +1,4 @@
-package com.example.demo.Controller;
+package com.example.demo.Controllers;
 
 import com.example.demo.Entities.DanhGia;
 import com.example.demo.Services.DanhGiaService;
