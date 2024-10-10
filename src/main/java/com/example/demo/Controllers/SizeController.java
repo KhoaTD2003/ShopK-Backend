@@ -10,30 +10,30 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/size")
+@RequestMapping("/api/size")
 public class SizeController {
     @Autowired
     private SizeService sService;
 
 
-    @GetMapping("/hien-thi")
+    @GetMapping()
     public List<Size> getAll() {
         return sService.getAll();
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<Size> add(@RequestBody Size size) {
         Size s = sService.add(size);
         return ResponseEntity.ok(s);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Size> update(@PathVariable UUID id, @RequestBody Size size) {
         Size s = sService.update(id, size);
         return ResponseEntity.ok(s);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         sService.delete(id);
         return ResponseEntity.noContent().build();
