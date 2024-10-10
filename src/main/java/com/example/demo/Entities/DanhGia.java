@@ -21,8 +21,8 @@ public class DanhGia {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "id_sanphamct", referencedColumnName = "id")
-    private ChiTietSanPham chiTietSanPham;
+    @JoinColumn(name = "id_sanpham", referencedColumnName = "id")
+    private SanPham sanPham;
 
     @Column(name = "bihluan")
     private String binhLuan;
