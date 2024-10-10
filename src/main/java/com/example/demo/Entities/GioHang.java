@@ -1,6 +1,7 @@
 package com.example.demo.Entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "GioHang")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})   // Bỏ qua các thuộc tính proxy
 public class GioHang {
 
     @Id
