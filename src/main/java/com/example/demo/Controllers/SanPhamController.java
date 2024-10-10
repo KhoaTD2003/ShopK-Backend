@@ -17,24 +17,24 @@ public class SanPhamController {
     private SanPhamService spService;
 
 
-    @GetMapping("/hien-thi")
+    @GetMapping()
     public List<SanPham> getAll() {
         return spService.getAll();
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<SanPham> add(@RequestBody SanPham sanPham) {
         SanPham ctsp = spService.add(sanPham);
         return ResponseEntity.ok(ctsp);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<SanPham> update(@PathVariable UUID id, @RequestBody SanPham sanPham) {
         SanPham sp = spService.update(id, sanPham);
         return ResponseEntity.ok(sp);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         spService.delete(id);
         return ResponseEntity.noContent().build();
