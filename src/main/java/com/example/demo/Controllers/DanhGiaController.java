@@ -11,30 +11,30 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/danhgia")
+@RequestMapping("/api/danhgia")
 public class DanhGiaController {
     @Autowired
     private DanhGiaService dgService;
 
 
-    @GetMapping("/hien-thi")
+    @GetMapping
     public List<DanhGia> getAll() {
         return dgService.getAll();
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<DanhGia> add(@RequestBody DanhGia danhGia) {
         DanhGia dg = dgService.add(danhGia);
         return ResponseEntity.ok(dg);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<DanhGia> update(@PathVariable UUID id, @RequestBody DanhGia danhGia) {
         DanhGia dg = dgService.update(id, danhGia);
         return ResponseEntity.ok(dg);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         dgService.delete(id);
         return ResponseEntity.noContent().build();

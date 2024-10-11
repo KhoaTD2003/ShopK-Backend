@@ -10,30 +10,30 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/mausac")
+@RequestMapping("/api/mausac")
 public class MauSacController {
     @Autowired
     private MauSacService msService;
 
 
-    @GetMapping("/hien-thi")
+    @GetMapping
     public List<MauSac> getAll() {
         return msService.getAll();
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<MauSac> add(@RequestBody MauSac mauSac) {
         MauSac ms = msService.add(mauSac);
         return ResponseEntity.ok(ms);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<MauSac> update(@PathVariable UUID id, @RequestBody MauSac mauSac) {
         MauSac ms = msService.update(id, mauSac);
         return ResponseEntity.ok(ms);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         msService.delete(id);
         return ResponseEntity.noContent().build();
