@@ -24,7 +24,7 @@ public class DanhGia {
     @JoinColumn(name = "id_sanpham", referencedColumnName = "id")
     private SanPham sanPham;
 
-    @Column(name = "bihluan")
+    @Column(name = "binhluan")
     private String binhLuan;
     @Column(name = "diem")
     private Integer diem;
