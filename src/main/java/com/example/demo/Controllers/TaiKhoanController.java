@@ -53,6 +53,20 @@ import java.util.UUID;
             taiKhoanService.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+
+        @PostMapping("/register")
+        public ResponseEntity<TaiKhoan> register(@RequestBody TaiKhoan taiKhoan) {
+            TaiKhoan newTaiKhoan = taiKhoanService.register(taiKhoan);
+            return ResponseEntity.ok(newTaiKhoan);
+        }
+
+        @PostMapping("/login")
+        public ResponseEntity<TaiKhoan> login(@RequestParam String tenTaiKhoan, @RequestParam String matKhau) {
+            return taiKhoanService.login(tenTaiKhoan, matKhau)
+                    .map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        }
+
     }
 
 
