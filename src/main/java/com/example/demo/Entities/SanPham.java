@@ -51,6 +51,10 @@ public class SanPham {
 
     @Column(name = "masanpham")
     private String maSP;
+
+    @Column(name = "tensanpham")
+    private String tenSP;
+
     @Column(name = "giaban")
     private BigDecimal giaBan;
     @Column(name = "gianhap")
