@@ -1,5 +1,6 @@
 package com.example.demo.Controllers;
 
+import com.example.demo.Dtos.SanPhamDto;
 import com.example.demo.Entities.SanPham;
 import com.example.demo.Services.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,12 @@ public class SanPhamController {
     private SanPhamService spService;
 
 
-    @GetMapping
+    @GetMapping()
     public List<SanPham> getAll() {
         return spService.getAll();
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<SanPham> add(@RequestBody SanPham sanPham) {
         SanPham ctsp = spService.add(sanPham);
         return ResponseEntity.ok(ctsp);

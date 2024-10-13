@@ -17,12 +17,12 @@ public class DanhGiaController {
     private DanhGiaService dgService;
 
 
-    @GetMapping
+    @GetMapping()
     public List<DanhGia> getAll() {
         return dgService.getAll();
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<DanhGia> add(@RequestBody DanhGia danhGia) {
         DanhGia dg = dgService.add(danhGia);
         return ResponseEntity.ok(dg);

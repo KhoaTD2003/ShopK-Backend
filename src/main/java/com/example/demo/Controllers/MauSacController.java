@@ -16,12 +16,12 @@ public class MauSacController {
     private MauSacService msService;
 
 
-    @GetMapping
+    @GetMapping()
     public List<MauSac> getAll() {
         return msService.getAll();
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<MauSac> add(@RequestBody MauSac mauSac) {
         MauSac ms = msService.add(mauSac);
         return ResponseEntity.ok(ms);

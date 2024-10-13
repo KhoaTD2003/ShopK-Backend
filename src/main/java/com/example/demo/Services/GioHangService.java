@@ -59,7 +59,6 @@ import java.util.UUID;
                 }
 
                 // Cập nhật các thuộc tính giỏ hàng
-                gioHang.setSanPham(gioHangDetails.getSanPham());  // Cập nhật tên sản phẩm
                 gioHang.setSoLuong(gioHangDetails.getSoLuong());  // Cập nhật số lượng
                 gioHang.setDonGia(gioHangDetails.getDonGia());    // Cập nhật đơn giá
 

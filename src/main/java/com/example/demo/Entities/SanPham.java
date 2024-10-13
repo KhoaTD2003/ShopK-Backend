@@ -1,5 +1,7 @@
 package com.example.demo.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -15,12 +18,12 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "SanPham")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class SanPham {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
-
 
     @ManyToOne
     @JoinColumn(name = "id_size", referencedColumnName = "id")
@@ -48,6 +51,10 @@ public class SanPham {
 
     @Column(name = "masanpham")
     private String maSP;
+
+    @Column(name = "tensanpham")
+    private String tenSP;
+
     @Column(name = "giaban")
     private BigDecimal giaBan;
     @Column(name = "gianhap")
@@ -61,4 +68,7 @@ public class SanPham {
     @Column(name = "trangthai")
     private Integer trangThai;
 
+//    @OneToMany(mappedBy = "sanPham")
+//    @JsonManagedReference // Điều khiển việc tuần tự hóa
+//    private List<GioHang> gioHang;
 }

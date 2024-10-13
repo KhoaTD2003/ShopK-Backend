@@ -1,5 +1,6 @@
 package com.example.demo.Services;
 
+import com.example.demo.Dtos.SanPhamDto;
 import com.example.demo.Entities.SanPham;
 import com.example.demo.Repositories.SanPhamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,24 @@ public class SanPhamService {
             spRepo.delete(optionalSanPham.get());
         } else {
             throw new RuntimeException("Không tìm thấy với ID: " + id);
+        }
+    }
+//    public List<SanPhamDto> getAllProductDetails() {
+//        return spRepo.findAllProductDetails();
+//    }
+
+    // Phương thức lấy danh sách sản phẩm, với tuỳ chọn sắp xếp theo giá
+    public List<SanPhamDto> getAllProductDetailsSortedByPrice(String sortOrder) {
+        if (sortOrder == null || sortOrder.isEmpty()) {
+            // Nếu không có sortOrder, trả về danh sách sản phẩm bình thường (không sắp xếp)
+            return spRepo.findAllProductDetails();
+        }
+
+        // Kiểm tra sortOrder để sắp xếp theo giá tăng hoặc giảm
+        if (sortOrder.equalsIgnoreCase("desc")) {
+            return spRepo.findAllProductDetailsSortedByPriceDesc();
+        } else {
+            return spRepo.findAllProductDetailsSortedByPriceAsc();
         }
     }
 }

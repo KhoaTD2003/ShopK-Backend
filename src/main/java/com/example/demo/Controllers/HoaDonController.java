@@ -16,9 +16,7 @@ public class HoaDonController {
     // lấy tất cả dữ liệu
     @GetMapping
     public List<HoaDon> getALlHoaDon() {
-
         return hoaDonService.getAll();
-
     }
     // add dữ liệu
     @PostMapping
