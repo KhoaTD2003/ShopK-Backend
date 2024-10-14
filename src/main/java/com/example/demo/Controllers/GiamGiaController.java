@@ -3,11 +3,16 @@ package com.example.demo.Controllers;
 import com.example.demo.Entities.GiamGia;
 import com.example.demo.Services.GiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -65,5 +70,22 @@ public class GiamGiaController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+    // Lấy danh sách có phân trang
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getAllGiamGia(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pg = (Pageable) PageRequest.of(page, size);
+        Page<GiamGia> pageGiamGias = service.getAll((org.springframework.data.domain.Pageable) pg);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", pageGiamGias.getContent());
+        response.put("currentPage", pageGiamGias.getNumber());
+        response.put("totalItems", pageGiamGias.getTotalElements());
+        response.put("totalPages", pageGiamGias.getTotalPages());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

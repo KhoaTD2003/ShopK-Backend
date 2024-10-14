@@ -3,6 +3,8 @@ package com.example.demo.Services;
 import com.example.demo.Entities.GiamGia;
 import com.example.demo.Repositories.GiamGiaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -49,4 +51,11 @@ public class GiamGiaService {
     public void delete(UUID id) {
         repository.deleteById(id);
     }
+    @Autowired
+    private GiamGiaRepository giamGiaRepository;
+
+    public Page<GiamGia> getAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
 }
