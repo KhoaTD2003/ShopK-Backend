@@ -3,6 +3,8 @@ package com.example.demo.Services;
 import com.example.demo.Entities.GiamGia;
 import com.example.demo.Repositories.GiamGiaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;

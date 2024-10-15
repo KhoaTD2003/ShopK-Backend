@@ -3,6 +3,8 @@ package com.example.demo.Services;
 import com.example.demo.Entities.PhuongThucTt;
 import com.example.demo.Repositories.PhuongThucThanhToanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -47,4 +49,11 @@ public class PhuongThucThanhToanService {
     public void delete(UUID id) {
         repository.deleteById(id);
     }
+    private PhuongThucThanhToanRepository phuongThucThanhToanRepository;
+
+    // Lấy tất cả phương thức thanh toán có phân trang
+    public Page<PhuongThucTt> getAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
 }
