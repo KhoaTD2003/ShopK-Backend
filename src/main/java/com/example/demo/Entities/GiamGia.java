@@ -32,6 +32,12 @@ public class GiamGia {
     @Column(name = "ngayketthuc", nullable = true)
     private Date ngayKetThuc;
 
+    @Column(name = "giamgia")
+    private String giamGia;
+
+    @Column(name = "soLanSuDung")
+    private Integer soLansd;
+
     @Column(name = "trangthai", nullable = true)
     private Boolean trangThai;
 }
