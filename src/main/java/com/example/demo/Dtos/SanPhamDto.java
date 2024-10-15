@@ -10,8 +10,10 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 public class SanPhamDto {
+
     private String tenSP;
     private String maSP;
     private BigDecimal giaBan;
     private String anh;
+    private String mota;
 }

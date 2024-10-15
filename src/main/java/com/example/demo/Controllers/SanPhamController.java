@@ -30,11 +30,19 @@ public class SanPhamController {
         return ResponseEntity.ok(ctsp);
     }
 
-//    @GetMapping("/details")
-//    public ResponseEntity<List<SanPhamDto>> getAllProductDetails() {
-//        List<SanPhamDto> productDetails = spService.getAllProductDetails();
-//        return ResponseEntity.ok(productDetails);
-//    }
+    @GetMapping("/search-and-sort")
+    public List<SanPhamDto> searchAndSortProducts(
+            @RequestParam(value = "tenSP", required = false) String tenSP,
+            @RequestParam(value = "sortOrder", required = false) String sortOrder) {
+
+        // Nếu không có tên tìm kiếm (tenSP), chỉ thực hiện sắp xếp theo giá
+        if (tenSP == null || tenSP.isEmpty()) {
+            return spService.getAllProductDetailsSortedByPrice(sortOrder);
+        }
+
+        // Nếu có tên tìm kiếm (tenSP), tìm kiếm sản phẩm và sắp xếp theo giá nếu có sortOrder
+        return spService.searchAndSortProducts(tenSP, sortOrder);
+    }
 
     @GetMapping("/sorted-by-price")
     public ResponseEntity<List<SanPhamDto>> getAllProductDetailsSortedByPrice(

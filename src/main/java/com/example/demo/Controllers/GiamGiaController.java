@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -34,6 +35,7 @@ public class GiamGiaController {
         }
     }
 
+
     // Thêm giảm giá mới
     @PostMapping
     public ResponseEntity<GiamGia> addGiamGia(@RequestBody GiamGia giamGia) {
@@ -44,17 +46,27 @@ public class GiamGiaController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+    // API kiểm tra và giảm số lần sử dụng mã giảm giá
+//    @PostMapping("/sudung")
+//    public ResponseEntity<String> suDungGiamGia(@RequestParam String maGiamGia) {
+//        boolean isSuccess = service.giamSoLanSuDung(maGiamGia);
+//        if (isSuccess) {
+//            return ResponseEntity.ok("Mã giảm giá đã được áp dụng.");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá đã hết số lần sử dụng hoặc không hợp lệ.");
+//        }
+//    }
 
     // Cập nhật giảm giá
-    @PutMapping("/{id}")
-    public ResponseEntity<GiamGia> updateGiamGia(@PathVariable UUID id, @RequestBody GiamGia giamGiaDetails) {
-        try {
-            GiamGia updatedGiamGia = service.update(id, giamGiaDetails);
-            return new ResponseEntity<>(updatedGiamGia, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<GiamGia> updateGiamGia(@PathVariable UUID id, @RequestBody GiamGia giamGiaDetails) {
+//        try {
+//            GiamGia updatedGiamGia = service.update(id, giamGiaDetails);
+//            return new ResponseEntity<>(updatedGiamGia, HttpStatus.OK);
+//        } catch (RuntimeException e) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     // Xóa giảm giá
     @DeleteMapping("/{id}")
@@ -65,5 +77,28 @@ public class GiamGiaController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/code")
+    public ResponseEntity<?> getDiscountByCode(@RequestParam String maGiamGia) {
+        // Lấy mã giảm giá từ database
+        Optional<GiamGia> giamGiaOpt = service.getByMa(maGiamGia);
+
+        if (giamGiaOpt.isPresent()) {
+            // Trả về thông tin mã giảm giá
+            return ResponseEntity.ok(giamGiaOpt.get());
+        } else {
+            // Nếu mã giảm giá không tồn tại, trả về 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mã giảm giá không tồn tại.");
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GiamGia> updateSoLansd(@PathVariable UUID id, @RequestBody GiamGia giamGiaUpdate) {
+        GiamGia updatedGiamGia = service.updateSoLansd(id, giamGiaUpdate.getSoLansd());
+        if (updatedGiamGia != null) {
+            return ResponseEntity.ok(updatedGiamGia);
+        }
+        return ResponseEntity.notFound().build();
     }
 }

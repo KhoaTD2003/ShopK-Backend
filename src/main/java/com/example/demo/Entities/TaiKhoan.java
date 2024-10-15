@@ -36,5 +36,7 @@ public class TaiKhoan {
     @Column(name = "trangthai")
     private boolean trangThai;
 
-
+    public TaiKhoan(UUID idTaiKhoan) {
+        this.id = idTaiKhoan;
+    }
 }
