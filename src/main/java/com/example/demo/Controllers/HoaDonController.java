@@ -21,6 +21,7 @@ public class HoaDonController {
     // add dữ liệu
     @PostMapping
     public ResponseEntity<HoaDon> addhoaDon(@RequestBody HoaDon hoaDon){
+        System.out.println(hoaDon.toString());
         HoaDon newHoaDon = hoaDonService.add(hoaDon);
         return ResponseEntity.ok(newHoaDon);
     }

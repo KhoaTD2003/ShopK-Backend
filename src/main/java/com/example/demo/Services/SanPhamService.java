@@ -42,7 +42,6 @@ public class SanPhamService {
 
     }
 
-
     public void delete(UUID id) {
         Optional<SanPham> optionalSanPham = spRepo.findById(id);
         if (optionalSanPham.isPresent()) {
@@ -51,9 +50,6 @@ public class SanPhamService {
             throw new RuntimeException("Không tìm thấy với ID: " + id);
         }
     }
-//    public List<SanPhamDto> getAllProductDetails() {
-//        return spRepo.findAllProductDetails();
-//    }
 
     // Phương thức lấy danh sách sản phẩm, với tuỳ chọn sắp xếp theo giá
     public List<SanPhamDto> getAllProductDetailsSortedByPrice(String sortOrder) {
@@ -69,4 +65,11 @@ public class SanPhamService {
             return spRepo.findAllProductDetailsSortedByPriceAsc();
         }
     }
+
+    //search sp theo tên và sort
+    public List<SanPhamDto> searchAndSortProducts(String tenSP, String sortOrder) {
+        return spRepo.searchAndSortProductsByName(tenSP, sortOrder);
+    }
+
+
 }
