@@ -40,6 +40,7 @@ public class TaiKhoanService {
             TaiKhoan taiKhoan = optionalTaiKhoan.get();
             taiKhoan.setTenTaiKhoan(taiKhoanDetails.getTenTaiKhoan()); // Ví dụ: cập nhật tên
             taiKhoan.setMatKhau(taiKhoanDetails.getMatKhau());
+            taiKhoan.setRoLe(taiKhoanDetails.getRoLe());
             taiKhoan.setTrangThai(taiKhoanDetails.isTrangThai());
 
             // Cập nhật các thuộc tính khác của ChatLieu nếu có
@@ -57,5 +58,21 @@ public class TaiKhoanService {
         } else {
             throw new RuntimeException("Không tìm thấy tài khoản với ID: " + id);
         }
+    }
+    public TaiKhoan register(TaiKhoan taiKhoan) {
+        // Kiểm tra xem tài khoản đã tồn tại chưa
+        if (repository.findByTenTaiKhoan(taiKhoan.getTenTaiKhoan()).isPresent()) {
+            throw new RuntimeException("Tài khoản đã tồn tại");
+        }
+        return repository.save(taiKhoan);
+    }
+
+    public Optional<TaiKhoan> login(String tenTaiKhoan, String matKhau) {
+        return repository.findByTenTaiKhoan(tenTaiKhoan)
+                .filter(taiKhoan -> taiKhoan.getMatKhau().equals(matKhau))
+                .map(taiKhoan -> {
+                    taiKhoan.setMatKhau("");
+                    return taiKhoan;
+                }); // Kiểm tra mật khẩu
     }
 }

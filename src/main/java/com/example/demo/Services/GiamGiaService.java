@@ -51,11 +51,41 @@ public class GiamGiaService {
     public void delete(UUID id) {
         repository.deleteById(id);
     }
-    @Autowired
-    private GiamGiaRepository giamGiaRepository;
 
-    public Page<GiamGia> getAll(Pageable pageable) {
-        return repository.findAll(pageable);
+    // Tìm mã giảm giá theo mã
+    public Optional<GiamGia> getByMa(String maGiamGia) {
+        return repository.findByMa(maGiamGia);
     }
 
+    // Cập nhật số lần sử dụng
+    public boolean giamSoLanSuDung(String maGiamGia) {
+        Optional<GiamGia> giamGiaOptional = repository.findByMa(maGiamGia);
+        if (giamGiaOptional.isPresent()) {
+            GiamGia giamGia = giamGiaOptional.get();
+            if (giamGia.getSoLansd() > 0) {
+                giamGia.setSoLansd(giamGia.getSoLansd() - 1); // Giảm số lần sử dụng
+                repository.save(giamGia);
+                return true;
+            }
+        }
+        return false; // Không thể giảm số lần sử dụng (mã hết hạn hoặc không hợp lệ)
+    }
+
+    //    public GiamGia updateSoLansd(UUID id, int newSoLansd) {
+//        GiamGia giamGia = repository.findById(id).orElse(null);
+//        if (giamGia != null) {
+//            giamGia.setSoLansd(newSoLansd);
+//            return repository.save(giamGia);
+//        }
+//        return null;
+//    }
+    public GiamGia updateSoLansd(UUID id, int newSoLansd) {
+        Optional<GiamGia> giamGiaOpt = repository.findById(id);
+        if (giamGiaOpt.isPresent()) {
+            GiamGia giamGia = giamGiaOpt.get();
+            giamGia.setSoLansd(newSoLansd);
+            return repository.save(giamGia); // Lưu lại thay đổi
+        }
+        return null; // Trả về null nếu không tìm thấy mã giảm giá
+    }
 }

@@ -1,5 +1,7 @@
 package com.example.demo.Controllers;
 
+
+import com.example.demo.Dtos.NguoiDungDto;
 import com.example.demo.Entities.NguoiDung;
 import com.example.demo.Services.NguoiDungService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/nguoidung")
 public class NguoiDungController {
+
     @Autowired
     private NguoiDungService nguoiDungService;
 
@@ -52,4 +55,11 @@ public class NguoiDungController {
         nguoiDungService.deleteNguoiDung(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/user")
+    public ResponseEntity<List<NguoiDungDto>> getNguoiDungByIdTaiKhoan(@RequestParam UUID idTaiKhoan) {
+        List<NguoiDungDto> nguoiDungDtos = nguoiDungService.getNguoiDungByIdTaiKhoan(idTaiKhoan);
+        return ResponseEntity.ok(nguoiDungDtos);
+    }
+
 }
+

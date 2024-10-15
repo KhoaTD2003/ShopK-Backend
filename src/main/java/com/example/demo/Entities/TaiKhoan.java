@@ -1,6 +1,7 @@
 package com.example.demo.Entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"matKhau"})
 public class TaiKhoan {
 
     @Id
@@ -22,22 +24,19 @@ public class TaiKhoan {
     @Column(name = "id", unique = true)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_nhanvien", referencedColumnName = "id")
-    private NhanVien nhanVien;
-
-    @ManyToOne
-    @JoinColumn(name = "id_khachhang", referencedColumnName = "id")
-    private KhachHang khachHang;
-
     @Column(name = "tentaikhoan", length = 50)
     private String tenTaiKhoan;
 
     @Column(name = "matkhau", length = 50)
     private String matKhau;
 
+    @Column(name = "role")
+    private String roLe;
+
     @Column(name = "trangthai")
     private boolean trangThai;
 
-
+    public TaiKhoan(UUID idTaiKhoan) {
+        this.id = idTaiKhoan;
+    }
 }

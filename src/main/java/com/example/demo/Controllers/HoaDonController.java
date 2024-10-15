@@ -21,13 +21,12 @@ public class HoaDonController {
     // lấy tất cả dữ liệu
     @GetMapping
     public List<HoaDon> getALlHoaDon() {
-
         return hoaDonService.getAll();
-
     }
     // add dữ liệu
     @PostMapping
     public ResponseEntity<HoaDon> addhoaDon(@RequestBody HoaDon hoaDon){
+        System.out.println(hoaDon.toString());
         HoaDon newHoaDon = hoaDonService.add(hoaDon);
         return ResponseEntity.ok(newHoaDon);
     }
