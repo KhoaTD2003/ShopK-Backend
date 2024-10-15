@@ -6,11 +6,11 @@ import com.example.demo.Services.PhuongThucThanhToanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Pageable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,22 +72,35 @@ public class PhuongThucttController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    // Lấy tất cả phương thức thanh toán có phân trang
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllPhuongThucTt(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        Pageable pagingg= (Pageable) PageRequest.of(page, size);
-        Page<PhuongThucTt> pagePhuongThucTts = phuongThucThanhToanService.getAll((org.springframework.data.domain.Pageable) pagingg);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("data", pagePhuongThucTts.getContent());
-        response.put("currentPage", pagePhuongThucTts.getNumber());
-        response.put("totalItems", pagePhuongThucTts.getTotalElements());
-        response.put("totalPages", pagePhuongThucTts.getTotalPages());
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
+//    // Lấy tất cả phương thức thanh toán có phân trang
+//    @GetMapping
+//    public ResponseEntity<Map<String, Object>> getAllPhuongThucTt(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size) {
+//
+//        Pageable pageable = (Pageable) PageRequest.of(page, size);
+//        Page<PhuongThucTt> pagePhuongThucTts = phuongThucThanhToanService.getAll(10,pageable);
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("data", pagePhuongThucTts.getContent());
+//        response.put("currentPage", pagePhuongThucTts.getNumber());
+//        response.put("totalItems", pagePhuongThucTts.getTotalElements());
+//        response.put("totalPages", pagePhuongThucTts.getTotalPages());
+//
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
+// Lấy tất cả phương thức thanh toán có phân trang
+//@GetMapping("/paged")
+//public Page<PhuongThucTt> getAllPhuongThucThanhToanPaged(@RequestParam(defaultValue = "0") int page) {
+//    Pageable pageable = (Pageable) PageRequest.of(page, 1); // 10 phần tử mỗi trang
+//    return phuongThucThanhToanService.getAll((org.springframework.data.domain.Pageable) pageable);
+//}
+// Lấy tất cả phương thức thanh toán có phân trang với 10 phần tử mỗi trang
+@GetMapping("/paged")
+public Page<PhuongThucTt> getAllPhuongThucThanhToanPaged(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "1") int size) {
+    Pageable pageable = PageRequest.of(page, size); // Mặc định là 10 phần tử
+    return phuongThucThanhToanService.getAll(pageable);
+}
 }

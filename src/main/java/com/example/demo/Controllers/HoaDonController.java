@@ -1,6 +1,7 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.Entities.HoaDon;
+import com.example.demo.Entities.LichSuHoaDon;
 import com.example.demo.Services.HoaDonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -43,21 +44,11 @@ public class HoaDonController {
         return ResponseEntity.noContent().build();
 
     }
-    // Phương thức lấy danh sách có phân trang
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllHoaDon(
+    @GetMapping("/paged")
+    public Page<HoaDon> getAllLichSuHoaDonPaged(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        Pageable pagingg = PageRequest.of(page, size);
-        Page<HoaDon> pageHoaDons = hoaDonService.getAll(pagingg);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("data", pageHoaDons.getContent());
-        response.put("currentPage", pageHoaDons.getNumber());
-        response.put("totalItems", pageHoaDons.getTotalElements());
-        response.put("totalPages", pageHoaDons.getTotalPages());
-
-        return ResponseEntity.ok(response);
+            @RequestParam(defaultValue = "1") int size) {
+        Pageable pageable = PageRequest.of(page, size); // Mặc định là 10 phần tử
+        return hoaDonService.getAll(pageable);
     }
 }
