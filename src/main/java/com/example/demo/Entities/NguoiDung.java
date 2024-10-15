@@ -1,5 +1,6 @@
 package com.example.demo.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class NguoiDung {
 
     @ManyToOne(fetch = FetchType.LAZY) // Tham chiếu đến bảng TaiKhoan
     @JoinColumn(name = "id_taikhoan")
+    @JsonIgnore // Thêm annotation này
     private TaiKhoan taiKhoan;
 
     @Column(name = "hoten")

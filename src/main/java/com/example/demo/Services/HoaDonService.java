@@ -17,6 +17,8 @@ public class HoaDonService {
         return repository.findAll();
     }
     public HoaDon add(HoaDon hoaDon) {
+        hoaDon.setNgayTao(new Date());
+        hoaDon.setTrangThai("Chưa thanh toán"); // Trạng thái mặc định
         return repository.save(hoaDon);
     }
     // update dữ liệu theo id

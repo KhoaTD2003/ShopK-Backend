@@ -29,6 +29,30 @@ public class SanPhamController {
         return ResponseEntity.ok(ctsp);
     }
 
+    @GetMapping("/search-and-sort")
+    public List<SanPhamDto> searchAndSortProducts(
+            @RequestParam(value = "tenSP", required = false) String tenSP,
+            @RequestParam(value = "sortOrder", required = false) String sortOrder) {
+
+        // Nếu không có tên tìm kiếm (tenSP), chỉ thực hiện sắp xếp theo giá
+        if (tenSP == null || tenSP.isEmpty()) {
+            return spService.getAllProductDetailsSortedByPrice(sortOrder);
+        }
+
+        // Nếu có tên tìm kiếm (tenSP), tìm kiếm sản phẩm và sắp xếp theo giá nếu có sortOrder
+        return spService.searchAndSortProducts(tenSP, sortOrder);
+    }
+
+    @GetMapping("/sorted-by-price")
+    public ResponseEntity<List<SanPhamDto>> getAllProductDetailsSortedByPrice(
+            @RequestParam(value = "sortOrder", required = false) String sortOrder) {
+
+        // Gọi service để lấy danh sách sản phẩm với thứ tự sắp xếp
+        List<SanPhamDto> products = spService.getAllProductDetailsSortedByPrice(sortOrder);
+
+        return ResponseEntity.ok(products);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<SanPham> update(@PathVariable UUID id, @RequestBody SanPham sanPham) {
         SanPham sp = spService.update(id, sanPham);
