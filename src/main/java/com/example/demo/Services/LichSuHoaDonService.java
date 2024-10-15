@@ -1,6 +1,7 @@
 package com.example.demo.Services;
 
 import com.example.demo.Entities.LichSuHoaDon;
+import com.example.demo.Entities.PhuongThucTt;
 import com.example.demo.Repositories.LichSuHoaDonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,7 +46,7 @@ public class LichSuHoaDonService {
         LichSuHoaDon lichSuHoaDon = getById(id);
         lichSuHoaDonRepository.delete(lichSuHoaDon);
     }
-    // Lấy tất cả lịch sử hóa đơn có phân trang
+    // Lấy tất cả phương thức thanh toán có phân trang
     public Page<LichSuHoaDon> getAll(Pageable pageable) {
         return lichSuHoaDonRepository.findAll(pageable);
     }
