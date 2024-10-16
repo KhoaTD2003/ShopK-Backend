@@ -3,6 +3,9 @@ package com.example.demo.Services;
 import com.example.demo.Entities.Size;
 import com.example.demo.Repositories.SizeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,6 +44,14 @@ public class SizeService {
         } else {
             throw new RuntimeException("Không tìm thấy với ID: " + id);
         }
+    }
+
+    @Autowired
+    private SizeRepository sizeRepo;
+
+    public Page<Size> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return sizeRepo.findAll(pageable);
     }
 
 

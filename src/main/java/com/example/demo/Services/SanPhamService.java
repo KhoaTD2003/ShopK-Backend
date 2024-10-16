@@ -4,6 +4,9 @@ import com.example.demo.Dtos.SanPhamDto;
 import com.example.demo.Entities.SanPham;
 import com.example.demo.Repositories.SanPhamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -69,6 +72,15 @@ public class SanPhamService {
     //search sp theo tên và sort
     public List<SanPhamDto> searchAndSortProducts(String tenSP, String sortOrder) {
         return spRepo.searchAndSortProductsByName(tenSP, sortOrder);
+    }
+
+    //Phân trang
+    @Autowired
+    private SanPhamRepository sanPRepo;
+
+    public Page<SanPham> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return sanPRepo.findAll(pageable);
     }
 
 

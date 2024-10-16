@@ -2,6 +2,8 @@ package com.example.demo.Repositories;
 
 import com.example.demo.Dtos.SanPhamDto;
 import com.example.demo.Entities.SanPham;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -43,6 +45,8 @@ public interface SanPhamRepository extends JpaRepository<SanPham, UUID> {
     List<SanPhamDto> searchAndSortProductsByName(
             @Param("tenSP") String tenSP,
             @Param("sortOrder") String sortOrder);
+    //Phân trang
+    Page<SanPham> findAll(Pageable pageable);
 
 
 }

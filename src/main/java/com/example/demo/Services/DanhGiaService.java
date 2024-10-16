@@ -3,6 +3,9 @@ package com.example.demo.Services;
 import com.example.demo.Entities.DanhGia;
 import com.example.demo.Repositories.DanhGiaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,5 +48,13 @@ public class DanhGiaService {
         } else {
             throw new RuntimeException("Không tìm thấy với ID: " + id);
         }
+    }
+
+    @Autowired
+    private DanhGiaRepository danhGRepo;
+
+    public Page<DanhGia> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return danhGRepo.findAll(pageable);
     }
 }
