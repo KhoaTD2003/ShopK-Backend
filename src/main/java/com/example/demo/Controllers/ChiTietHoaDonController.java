@@ -1,9 +1,9 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.Entities.ChiTietHoaDon;
-import com.example.demo.Entities.GioHang;
 import com.example.demo.Services.ChiTietHoaDonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,6 +29,15 @@ public class ChiTietHoaDonController {
     @GetMapping
     public List<ChiTietHoaDon> getChiTietHoaDon() {
         return this.chiTietHoaDonService.getAll();
+    }
+
+    //Phân trang
+    @GetMapping("/paged")
+    public ResponseEntity<Page<ChiTietHoaDon>> getPagedChiTietHoaDon(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<ChiTietHoaDon> result = chiTietHoaDonService.getAllPaged(page, size);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping
