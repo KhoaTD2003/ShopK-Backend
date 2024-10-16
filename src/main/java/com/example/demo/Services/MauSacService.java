@@ -3,6 +3,9 @@ package com.example.demo.Services;
 import com.example.demo.Entities.MauSac;
 import com.example.demo.Repositories.MauSacRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,6 +45,14 @@ public class MauSacService {
         } else {
             throw new RuntimeException("Không tìm thấy với ID: " + id);
         }
+    }
+
+    @Autowired
+    private MauSacRepository mauSRepo;
+
+    public Page<MauSac> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return mauSRepo.findAll(pageable);
     }
 
 }

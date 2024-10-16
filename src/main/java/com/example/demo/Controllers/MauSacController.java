@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 import com.example.demo.Entities.MauSac;
 import com.example.demo.Services.MauSacService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,5 +38,12 @@ public class MauSacController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         msService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/page")
+    public Page<MauSac> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int size) {
+        return msService.getAll(page, size);
     }
 }

@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 import com.example.demo.Entities.DanhGia;
 import com.example.demo.Services.DanhGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +39,11 @@ public class DanhGiaController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         dgService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/page")
+    public Page<DanhGia> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int size) {
+        return dgService.getAll(page, size);
     }
 }

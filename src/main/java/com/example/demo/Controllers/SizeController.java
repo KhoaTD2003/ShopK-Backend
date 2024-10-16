@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 import com.example.demo.Entities.Size;
 import com.example.demo.Services.SizeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,4 +39,13 @@ public class SizeController {
         sService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/page")
+    public Page<Size> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int size) {
+            return sService.getAll(page, size);
+    }
+
+
 }

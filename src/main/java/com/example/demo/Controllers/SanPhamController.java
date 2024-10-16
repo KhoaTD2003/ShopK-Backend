@@ -2,13 +2,16 @@ package com.example.demo.Controllers;
 
 import com.example.demo.Dtos.SanPhamDto;
 import com.example.demo.Entities.SanPham;
+import com.example.demo.Entities.Size;
 import com.example.demo.Services.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -64,5 +67,12 @@ public class SanPhamController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         spService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/page")
+    public Page<SanPham> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "1") int size) {
+        return spService.getAll(page, size);
     }
 }
