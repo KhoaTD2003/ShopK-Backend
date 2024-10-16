@@ -3,6 +3,8 @@ package com.example.demo.Services;
 import com.example.demo.Entities.TheLoai;
 import com.example.demo.Repositories.TheLoaiRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +19,11 @@ public class TheLoaiService {
 
     public List<TheLoai> getAll() {
         return this.theLoaiRepo.findAll();
+    }
+
+    //Phân trang
+    public Page<TheLoai> getAllPaged(int page, int size) {
+        return theLoaiRepo.findAll(PageRequest.of(page, size));
     }
 
     public TheLoai add(TheLoai theLoai) {

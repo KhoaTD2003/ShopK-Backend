@@ -3,6 +3,8 @@ package com.example.demo.Services;
 import com.example.demo.Entities.XuatXu;
 import com.example.demo.Repositories.XuatXuRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +19,11 @@ public class XuatXuService {
 
     public List<XuatXu> getAll() {
         return this.xuatXuRepo.findAll();
+    }
+
+    //Phân trang
+    public Page<XuatXu> getAllPaged(int page, int size) {
+        return xuatXuRepo.findAll(PageRequest.of(page, size));
     }
 
     public XuatXu add(XuatXu xuatXu) {

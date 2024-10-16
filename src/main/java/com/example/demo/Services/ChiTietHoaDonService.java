@@ -1,9 +1,10 @@
 package com.example.demo.Services;
 
 import com.example.demo.Entities.ChiTietHoaDon;
-import com.example.demo.Entities.GioHang;
 import com.example.demo.Repositories.ChiTietHoaDonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,6 +20,11 @@ public class ChiTietHoaDonService {
 
     public List<ChiTietHoaDon> getAll() {
         return this.chiTietHoaDonRepo.findAll();
+    }
+
+    //Phân trang
+    public Page<ChiTietHoaDon> getAllPaged(int page, int size) {
+        return chiTietHoaDonRepo.findAll(PageRequest.of(page, size));
     }
 
     public ChiTietHoaDon add(ChiTietHoaDon chiTietHoaDon) {
