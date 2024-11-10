@@ -28,4 +28,6 @@
 
                 private UUID idTaiKhoan; // Thay đổi để lấy ID tài khoản
 
+                private Boolean trangThai;
+
         }

@@ -4,10 +4,13 @@ import com.example.demo.Dtos.SanPhamDto;
 import com.example.demo.Entities.SanPham;
 import com.example.demo.Repositories.SanPhamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,8 +19,9 @@ public class SanPhamService {
     @Autowired
     private SanPhamRepository spRepo;
 
-    public List<SanPham> getAll() {
-        return spRepo.findAll();
+    public Page<SanPhamDto> getAll(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12);
+        return spRepo.findAllProductDetails(pageable);
     }
 
     public SanPham add(SanPham sanPham){
@@ -52,24 +56,58 @@ public class SanPhamService {
     }
 
     // Phương thức lấy danh sách sản phẩm, với tuỳ chọn sắp xếp theo giá
-    public List<SanPhamDto> getAllProductDetailsSortedByPrice(String sortOrder) {
+    public Page<SanPhamDto> getAllProductDetailsSortedByPrice(String sortOrder,int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12);
+
         if (sortOrder == null || sortOrder.isEmpty()) {
             // Nếu không có sortOrder, trả về danh sách sản phẩm bình thường (không sắp xếp)
-            return spRepo.findAllProductDetails();
+            return spRepo.findAllProductDetails(pageable);
         }
 
         // Kiểm tra sortOrder để sắp xếp theo giá tăng hoặc giảm
         if (sortOrder.equalsIgnoreCase("desc")) {
-            return spRepo.findAllProductDetailsSortedByPriceDesc();
+            return spRepo.findAllProductDetailsSortedByPriceDesc(pageable);
         } else {
-            return spRepo.findAllProductDetailsSortedByPriceAsc();
+            return spRepo.findAllProductDetailsSortedByPriceAsc(pageable);
         }
     }
 
     //search sp theo tên và sort
-    public List<SanPhamDto> searchAndSortProducts(String tenSP, String sortOrder) {
-        return spRepo.searchAndSortProductsByName(tenSP, sortOrder);
+    public Page<SanPhamDto> searchAndSortProducts(String tenSP, String sortOrder, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12);
+        return spRepo.searchAndSortProductsByName(tenSP, sortOrder,pageable);
+    }
+
+    public Page<SanPhamDto> findByThuongHieu(String thuongHieu, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12);
+        return spRepo.findByThuongHieu(thuongHieu,pageable);
     }
 
 
+    public Page<SanPhamDto> findByTheLoai(String theLoai, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12);
+        return spRepo.findByTheLoai(theLoai,pageable);
+    }
+
+    public SanPhamDto findByMaSP(@Param("maSP") String maSP){
+      return spRepo.findByMaSP(maSP);
+    }
+
+    // lấy sản phẩm theo màu sắc
+    public Page<SanPhamDto> findByMauSac(String mauSac, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12);
+        return spRepo.findByMauSac(mauSac, pageable);
+    }
+
+    // lấy sản phẩm theo kích cỡ
+    public Page<SanPhamDto> findBySize(String size, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12);
+        return spRepo.findBySize(size, pageable);
+    }
+
+    // lấy sản phẩm theo giá trong một khoảng
+    public Page<SanPhamDto> findByPriceBetween(double minPrice, double maxPrice, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12);
+        return spRepo.findByPriceBetween(minPrice, maxPrice, pageable);
+    }
 }

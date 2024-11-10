@@ -30,13 +30,26 @@ public class TaiKhoan {
     @Column(name = "matkhau", length = 50)
     private String matKhau;
 
+    @Column(name = "sdt")
+    private String sdt;
+
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "role")
-    private String roLe;
+    private String role;
 
     @Column(name = "trangthai")
     private boolean trangThai;
 
+    @Column(name = "resetToken")
+    private String resetToken; // Thêm trường resetToken
+
     public TaiKhoan(UUID idTaiKhoan) {
         this.id = idTaiKhoan;
     }
+
+    @OneToOne(mappedBy = "taiKhoan", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private NguoiDung nguoiDung;
+
 }

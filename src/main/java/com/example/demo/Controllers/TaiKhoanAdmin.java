@@ -1,0 +1,136 @@
+package com.example.demo.Controllers;
+
+import com.example.demo.Dtos.UserDto;
+import com.example.demo.Entities.NguoiDung;
+import com.example.demo.Entities.TaiKhoan;
+import com.example.demo.Repositories.NguoiDungRepository;
+import com.example.demo.Services.NguoiDungService;
+import com.example.demo.Services.TaiKhoanService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+
+@RestController
+@RequestMapping("/api/loginAuth")
+public class TaiKhoanAdmin {
+
+    @Autowired
+    private TaiKhoanService taiKhoanService;
+
+    @Autowired
+    private NguoiDungService nguoiDungService;
+
+    @Autowired
+    private NguoiDungRepository nguoiDungRepository;
+
+
+    @PostMapping()
+    public ResponseEntity<?> loginAdmin(@RequestParam String tenTaiKhoan, @RequestParam String matKhau) {
+        try {
+            TaiKhoan taiKhoan = taiKhoanService.loginAdmin(tenTaiKhoan, matKhau);
+            return ResponseEntity.ok(taiKhoan);  // Trả về đối tượng TaiKhoan mà không có UUID
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/customer")
+    public List<NguoiDung> getCustomer(@RequestParam(defaultValue = "khách hàng") String role) {
+        // Gọi service để lấy danh sách người dùng theo role
+        return nguoiDungService.getUsersByRole(role);
+    }
+
+    @GetMapping("/employee")
+    public List<NguoiDung> getStaff(@RequestParam(defaultValue = "Nhân viên") String role) {
+        // Gọi service để lấy danh sách người dùng theo role
+        return nguoiDungService.getUsersByRole(role);
+    }
+
+
+    @PutMapping("/updateStatus/{userId}")
+    public String updateStatus(@PathVariable("userId") UUID userId, @RequestParam("trangThai") boolean trangThai) {
+        System.out.println("User ID: " + userId);
+        System.out.println("Trang Thai: " + trangThai);
+        boolean result = nguoiDungService.updateStatus(userId, trangThai);
+        if (result) {
+            return "Trạng thái người dùng đã được cập nhật thành công.";
+        } else {
+            return "Không tìm thấy người dùng với ID: " + userId;
+        }
+    }
+
+    @PutMapping("/updateUser/{id}")
+    public ResponseEntity<NguoiDung> updateUser(@PathVariable UUID id, @RequestBody NguoiDung updatedUser) {
+        NguoiDung updated = nguoiDungService.updateUser(id, updatedUser);
+        if (updated != null) {
+            return ResponseEntity.ok(updated);  // Trả về người dùng đã cập nhật
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Không tìm thấy người dùng
+        }
+    }
+
+    @PutMapping("/updateRole/{id}")
+    public ResponseEntity<NguoiDung> updateRole(@PathVariable UUID id, @RequestParam String role) {
+        NguoiDung updated = nguoiDungService.updateUserRole(id, role);
+        if (updated != null) {
+            return ResponseEntity.ok(updated);  // Trả về người dùng đã cập nhật
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Không tìm thấy người dùng
+        }
+    }
+
+//    @GetMapping("/checkEmail")
+//    public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam String email) {
+//        boolean exists = nguoiDungRepository.findByEmail(email) != null;
+//        Map<String, Boolean> response = new HashMap<>();
+//        response.put("exists", exists);
+//        return ResponseEntity.ok(response);
+//    }
+//
+//    @GetMapping("/checkSdt")
+//    public ResponseEntity<Map<String, Boolean>> checkSdt(@RequestParam String sdt) {
+//        boolean exists = nguoiDungRepository.findBySdt(sdt) != null;
+//        Map<String, Boolean> response = new HashMap<>();
+//        response.put("exists", exists);
+//        return ResponseEntity.ok(response);
+//    }
+
+
+    @GetMapping("/getUser/{userId}")
+    public ResponseEntity<NguoiDung> getUserById(@PathVariable String userId) {
+        try {
+            // Gọi service để lấy người dùng
+            NguoiDung user = nguoiDungService.getUserById(UUID.fromString(userId));  // Chuyển đổi String thành UUID
+            if (user != null) {
+                return ResponseEntity.ok(user);  // Trả về thông tin người dùng
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Trả về 404 nếu không tìm thấy người dùng
+            }
+        } catch (IllegalArgumentException e) {
+            // Trường hợp UUID không hợp lệ
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // Xóa người dùng và tài khoản liên quan
+        @DeleteMapping("/deleteUser/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable("id") UUID id) {
+        NguoiDung userToDelete = nguoiDungService.getUserById(id);
+
+        if (userToDelete != null) {
+            // Gọi service để xóa người dùng và tài khoản liên quan
+            boolean deleted = nguoiDungService.deleteNguoiDung(userToDelete);
+            if (deleted) {
+                return ResponseEntity.ok("User deleted successfully");
+            } else {
+                return ResponseEntity.status(500).body("Error deleting user");
+            }
+        } else {
+            return ResponseEntity.status(404).body("User not found");
+        }
+    }
+}

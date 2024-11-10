@@ -26,6 +26,10 @@ public class SanPham {
     private UUID id;
 
     @ManyToOne
+    @JoinColumn(name = "thuongHieu_id", referencedColumnName = "id")
+    private ThuongHieu thuongHieu;
+
+    @ManyToOne
     @JoinColumn(name = "id_size", referencedColumnName = "id")
     private Size size;
 

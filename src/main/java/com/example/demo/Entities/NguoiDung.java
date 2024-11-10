@@ -1,5 +1,6 @@
 package com.example.demo.Entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class NguoiDung {
     @Column(name = "manguoidung", unique = true, nullable = false)
     private String maNguoiDung;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Tham chiếu đến bảng TaiKhoan
+    @OneToOne(fetch = FetchType.LAZY) // Tham chiếu đến bảng TaiKhoan
     @JoinColumn(name = "id_taikhoan")
     @JsonIgnore // Thêm annotation này
     private TaiKhoan taiKhoan;
@@ -36,6 +37,8 @@ public class NguoiDung {
 
     @Column(name = "namsinh")
     @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+
     private Date namSinh;
 
     @Column(name = "diachi")
@@ -48,5 +51,7 @@ public class NguoiDung {
     private String sdt;
 
     @Column(name = "trangthai")
-    private Boolean trangThai;
+    private Boolean trangThai = true;
+
+
 }
