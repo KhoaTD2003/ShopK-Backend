@@ -1,7 +1,10 @@
 package com.example.demo.Services;
 
+import com.example.demo.Dtos.SanPhamAdminDto;
 import com.example.demo.Dtos.SanPhamDto;
+import com.example.demo.Entities.NguoiDung;
 import com.example.demo.Entities.SanPham;
+import com.example.demo.Entities.TaiKhoan;
 import com.example.demo.Repositories.SanPhamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,10 +23,10 @@ public class SanPhamService {
     @Autowired
     private SanPhamRepository spRepo;
 
-    public Page<SanPhamDto> getAll(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 12);
-        return spRepo.findAllProductDetails(pageable);
-    }
+//    public Page<SanPhamDto> getAll(int pageNumber) {
+//        Pageable pageable = PageRequest.of(pageNumber, 12);
+//        return spRepo.findAllProductDetails(pageable);
+//    }
 
     public SanPham add(SanPham sanPham){
         return spRepo.save(sanPham);
@@ -109,5 +113,63 @@ public class SanPhamService {
     public Page<SanPhamDto> findByPriceBetween(double minPrice, double maxPrice, int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, 12);
         return spRepo.findByPriceBetween(minPrice, maxPrice, pageable);
+    }
+
+
+    //SẢN PHẨM ADMIN
+    //
+    //
+    public Page<SanPhamAdminDto> getAllProducts(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12);
+        return spRepo.findAllProduct(pageable);
+    }
+
+    public boolean updateStatusProduct(UUID userId, boolean trangThai) {
+        SanPham sanPham = spRepo.findById(userId).orElse(null);
+        if (sanPham != null) {
+            sanPham.setTrangThai(trangThai);
+            spRepo.save(sanPham);
+            return true;
+        } else {
+            System.out.println("Không tìm thấy sp với ID: " + userId);
+            return false;
+        }
+    }
+
+    public SanPham getProductById(UUID productId) {
+        return spRepo.findById(productId).orElse(null);  // Tìm sptheo UUID
+    }
+
+    public boolean deleteProduct(SanPham sanPham) {
+        try {
+            spRepo.delete(sanPham);
+            return true;
+        } catch (Exception e) {
+            return false;  // Nếu có lỗi xảy ra trong quá trình xóa
+        }
+    }
+
+    // Cập nhật sản phẩm
+    public SanPham updateProduct(SanPham sanPham) {
+        return spRepo.save(sanPham);
+    }
+
+    // Lấy mã sản phẩm mới (SPxxx)
+    public String getMaxProductCode() {
+        // Lấy mã sản phẩm lớn nhất từ cơ sở dữ liệu
+        Integer maxProductNumber = spRepo.getMaxProductCode();
+
+        // Nếu không có sản phẩm nào, bắt đầu từ SP001
+        if (maxProductNumber == null) {
+            return "SP001";
+        }
+
+        // Tăng số lên 1 và tạo mã mới theo định dạng SPxxx
+        int newProductNumber = maxProductNumber + 1;
+        return String.format("SP%03d", newProductNumber);
+    }
+    // Kiểm tra mã sản phẩm đã tồn tại hay chưa
+    public boolean isProductCodeExist(String maSP) {
+        return spRepo.existsByMaSP(maSP); // Kiểm tra mã sản phẩm có tồn tại trong cơ sở dữ liệu
     }
 }

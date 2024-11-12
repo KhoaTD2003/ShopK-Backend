@@ -1,6 +1,8 @@
 package com.example.demo.Repositories;
 
+import com.example.demo.Dtos.SanPhamAdminDto;
 import com.example.demo.Dtos.SanPhamDto;
+import com.example.demo.Entities.NguoiDung;
 import com.example.demo.Entities.SanPham;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -84,5 +86,38 @@ public interface SanPhamRepository extends JpaRepository<SanPham, UUID> {
             "JOIN s.size sz " +
             "WHERE (:size IS NULL OR sz.ten LIKE %:size%)")
     Page<SanPhamDto> findBySize(@Param("size") String size, Pageable pageable);
+
+
+
+    //SAN PHAM ADMIN
+
+
+    @Query("SELECT new com.example.demo.Dtos.SanPhamAdminDto(sp.id, sp.maSP, sp.tenSP, sp.giaBan, sp.soLuongTon, sp.moTa, sp.anh, "
+            + "th.ten, sz.ten, ms.ten, cl.ten, xx.ten, tl.ten, sp.trangThai) "
+            + "FROM SanPham sp "
+            + "JOIN sp.thuongHieu th "
+            + "JOIN sp.size sz "
+            + "JOIN sp.mauSac ms "
+            + "JOIN sp.chatLieu cl "
+            + "JOIN sp.xuatXu xx "
+            + "JOIN sp.theLoai tl ")
+    Page<SanPhamAdminDto> findAllProduct(Pageable pageable);
+
+    void delete(SanPham sanPham);
+
+//    @Query("SELECT MAX(p.maSP) FROM SanPham p")
+//    String getMaxProductCode();
+//
+//    @Query("SELECT MAX(CAST(SUBSTRING(p.maSP, 3, LENGTH(p.maSP)) AS INT)) FROM SanPham p")
+//    Integer getMaxProductNumber();
+//
+//    @Query("SELECT p.maSP FROM SanPham p WHERE p.maSP LIKE 'SP%' ORDER BY p.maSP DESC")
+//    List<String> getAllProductCodes();
+
+    @Query(value = "SELECT MAX(CAST(SUBSTRING(masanpham, 3, LEN(masanpham)) AS INT)) FROM SanPham WHERE masanpham LIKE 'SP%'", nativeQuery = true)
+    Integer getMaxProductCode();
+
+
+    boolean existsByMaSP(String maSP);
 
 }

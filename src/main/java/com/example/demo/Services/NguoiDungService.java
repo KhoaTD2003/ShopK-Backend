@@ -2,7 +2,6 @@ package com.example.demo.Services;
 
 
 import com.example.demo.Dtos.NguoiDungDto;
-import com.example.demo.Dtos.UserDto;
 import com.example.demo.Entities.NguoiDung;
 import com.example.demo.Entities.TaiKhoan;
 import com.example.demo.Repositories.NguoiDungRepository;
@@ -10,7 +9,13 @@ import com.example.demo.Repositories.TaiKhoanRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 import java.util.Optional;
@@ -146,9 +151,9 @@ import java.util.stream.Collectors;
             if (updatedUser.getEmail() != null) existingUser.setEmail(updatedUser.getEmail());
             if (updatedUser.getSdt() != null) existingUser.setSdt(updatedUser.getSdt());
 
-            if (updatedUser.getTaiKhoan() != null && updatedUser.getTaiKhoan().getRole() != null) {
-                existingUser.getTaiKhoan().setRole(updatedUser.getTaiKhoan().getRole());
-            }
+//            if (updatedUser.getTaiKhoan() != null && updatedUser.getTaiKhoan().getRole() != null) {
+//                existingUser.getTaiKhoan().setRole(updatedUser.getTaiKhoan().getRole());
+//            }
 
             // Lưu người dùng đã cập nhật
             return nguoiDungRepository.save(existingUser);
@@ -177,6 +182,8 @@ import java.util.stream.Collectors;
         return null; // Trả về null nếu không tìm thấy người dùng
     }
 
+
+
     // Xóa người dùng và tài khoản liên quan
     public boolean deleteNguoiDung(NguoiDung nguoiDung) {
         try {
@@ -194,8 +201,39 @@ import java.util.stream.Collectors;
         }
     }
 
-
-
+//
+//    @PutMapping("/updateUser/{id}")
+//    public ResponseEntity<NguoiDung> updateUser(@PathVariable UUID id, @RequestBody NguoiDung updatedUser,
+//                                                @RequestHeader("Authorization") String token) {
+//
+//        // Lấy vai trò người dùng từ session/token (hoặc header)
+//        String userRole = getUserRoleFromSessionOrToken(token);
+//
+//        // Nếu vai trò không phải ADMIN, trả về lỗi FORBIDDEN (403)
+//        if (userRole == null || !"ADMIN".equalsIgnoreCase(userRole)) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // Không phải ADMIN, từ chối quyền truy cập
+//        }
+//
+//        NguoiDung updated = nguoiDungService.updateUser(id, updatedUser);
+//        if (updated != null) {
+//            return ResponseEntity.ok(updated);  // Trả về người dùng đã cập nhật
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Không tìm thấy người dùng
+//        }
+//    }
+//
+//    private String getUserRoleFromSessionOrToken(String token) {
+//        // Giả sử bạn lấy vai trò người dùng từ session hoặc từ token được gửi trong header
+//
+//        // Kiểm tra nếu token hợp lệ và từ đó lấy vai trò của người dùng
+//        if (token != null && token.equals("someSessionToken")) {
+//            // Giải mã token hoặc lấy thông tin vai trò từ session (ví dụ, token chứa thông tin về vai trò)
+//            return "Admim";  // Giả sử token này cho biết người dùng là ADMIN
+//        }
+//
+//        // Trả về null hoặc ném lỗi nếu không phải ADMIN
+//        return null; // Không trả về "USER" nữa, mà chỉ trả về null nếu không phải ADMIN
+//    }
 }
 
 

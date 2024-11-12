@@ -1,6 +1,7 @@
 package com.example.demo.Services;
 
 import com.example.demo.Entities.ChatLieu;
+import com.example.demo.Entities.MauSac;
 import com.example.demo.Repositories.ChatLieuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,14 @@ public class ChatLieuService {
         return repository.findAll();
     }
 
-    public ChatLieu add(ChatLieu chatLieu){
+    public ChatLieu add(ChatLieu chatLieu) {
         return repository.save(chatLieu);
     }
 
     // Cập nhật chất liệu theo id
-    public ChatLieu update(UUID id, ChatLieu chatLieuDetails){
+    public ChatLieu update(UUID id, ChatLieu chatLieuDetails) {
         Optional<ChatLieu> optionalChatLieu = repository.findById(id);
-        if(optionalChatLieu.isPresent()){
+        if (optionalChatLieu.isPresent()) {
             ChatLieu chatLieu = optionalChatLieu.get();
             chatLieu.setTen(chatLieuDetails.getTen()); // Ví dụ: cập nhật tên
             chatLieu.setMa(chatLieuDetails.getMa());
@@ -40,10 +41,16 @@ public class ChatLieuService {
     // Xóa chất liệu theo id
     public void delete(UUID id) {
         Optional<ChatLieu> optionalChatLieu = repository.findById(id);
-        if(optionalChatLieu.isPresent()){
+        if (optionalChatLieu.isPresent()) {
             repository.delete(optionalChatLieu.get());
         } else {
             throw new RuntimeException("Không tìm thấy chất liệu với ID: " + id);
         }
     }
+
+    public ChatLieu findById(UUID id) {
+        return repository.findById(id).orElse(null);
+    }
 }
+
+

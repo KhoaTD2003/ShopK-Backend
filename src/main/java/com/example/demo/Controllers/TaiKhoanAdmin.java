@@ -1,12 +1,17 @@
 package com.example.demo.Controllers;
 
-import com.example.demo.Dtos.UserDto;
+import com.example.demo.Dtos.SanPhamAdminDto;
+import com.example.demo.Dtos.SanPhamDto;
 import com.example.demo.Entities.NguoiDung;
+import com.example.demo.Entities.SanPham;
 import com.example.demo.Entities.TaiKhoan;
 import com.example.demo.Repositories.NguoiDungRepository;
+import com.example.demo.Repositories.SanPhamRepository;
 import com.example.demo.Services.NguoiDungService;
+import com.example.demo.Services.SanPhamService;
 import com.example.demo.Services.TaiKhoanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +29,8 @@ public class TaiKhoanAdmin {
     private NguoiDungService nguoiDungService;
 
     @Autowired
-    private NguoiDungRepository nguoiDungRepository;
-
+    private SanPhamService sanPhamService;
+//tài khoản
 
     @PostMapping()
     public ResponseEntity<?> loginAdmin(@RequestParam String tenTaiKhoan, @RequestParam String matKhau) {
@@ -117,7 +122,7 @@ public class TaiKhoanAdmin {
     }
 
     // Xóa người dùng và tài khoản liên quan
-        @DeleteMapping("/deleteUser/{id}")
+    @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") UUID id) {
         NguoiDung userToDelete = nguoiDungService.getUserById(id);
 
@@ -133,4 +138,44 @@ public class TaiKhoanAdmin {
             return ResponseEntity.status(404).body("User not found");
         }
     }
+    //sản phẩm
+
+    @GetMapping("/product")
+    public ResponseEntity<Page<SanPhamAdminDto>> getAllProducts(@RequestParam(defaultValue = "0") int page) {
+        Page<SanPhamAdminDto> products = sanPhamService.getAllProducts(page);
+        return ResponseEntity.ok(products);
+    }
+
+    @PutMapping("/upStatusProduct/{productId}")
+    public String updateStatusProduct(@PathVariable("productId") UUID productId, @RequestParam("trangThai") boolean trangThai) {
+        System.out.println("productId ID: " + productId);
+        System.out.println("Trang Thai: " + trangThai);
+        boolean result = sanPhamService.updateStatusProduct(productId, trangThai);
+        if (result) {
+            return "Trạng thái người dùng đã được cập nhật thành công.";
+        } else {
+            return "Không tìm thấy người dùng với ID: " + productId;
+        }
+    }
+
+    @DeleteMapping("/deleteProduct/{productId}")
+    public ResponseEntity<String> deleteProduct(@PathVariable("productId") UUID id) {
+        SanPham prDelete = sanPhamService.getProductById(id);
+
+        if (prDelete != null) {
+            // Gọi service để xóa người dùng và tài khoản liên quan
+            boolean deleted = sanPhamService.deleteProduct(prDelete);
+            if (deleted) {
+                return ResponseEntity.ok("User deleted successfully");
+            } else {
+                return ResponseEntity.status(500).body("Error deleting user");
+            }
+        } else {
+            return ResponseEntity.status(404).body("User not found");
+        }
+    }
+
+
 }
+
+

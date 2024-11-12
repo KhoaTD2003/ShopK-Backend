@@ -1,5 +1,6 @@
 package com.example.demo.Services;
 
+import com.example.demo.Entities.MauSac;
 import com.example.demo.Entities.TheLoai;
 import com.example.demo.Repositories.TheLoaiRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,4 +45,9 @@ public class TheLoaiService {
         }
 
     }
+
+    public TheLoai findById(UUID id) {
+        return theLoaiRepo.findById(id).orElse(null);
+    }
+
 }

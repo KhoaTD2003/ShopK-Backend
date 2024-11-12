@@ -237,6 +237,8 @@ public class TaiKhoanService {
             if ("Nhân Viên".equalsIgnoreCase(taiKhoan.getRole()) || "admin".equalsIgnoreCase(taiKhoan.getRole())) {
                 // Xóa mật khẩu trước khi trả về
                 taiKhoan.setMatKhau("");
+                System.out.println("Mật khẩu đã bị xóa: " + taiKhoan.getMatKhau());
+
                 return taiKhoan;  // Trả về đối tượng TaiKhoan
             } else {
                 throw new IllegalArgumentException("Bạn không có quyền truy cập.");

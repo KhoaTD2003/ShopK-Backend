@@ -1,6 +1,7 @@
 package com.example.demo.Services;
 
 import com.example.demo.Entities.MauSac;
+import com.example.demo.Entities.ThuongHieu;
 import com.example.demo.Repositories.MauSacRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,5 +44,7 @@ public class MauSacService {
             throw new RuntimeException("Không tìm thấy với ID: " + id);
         }
     }
-
+    public MauSac findById(UUID id) {
+        return msRepo.findById(id).orElse(null);
+    }
 }

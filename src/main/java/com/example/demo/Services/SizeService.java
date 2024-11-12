@@ -1,5 +1,6 @@
 package com.example.demo.Services;
 
+import com.example.demo.Entities.MauSac;
 import com.example.demo.Entities.Size;
 import com.example.demo.Repositories.SizeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +44,7 @@ public class SizeService {
         }
     }
 
-
+    public Size findById(UUID id) {
+        return sRepo.findById(id).orElse(null);
+    }
 }

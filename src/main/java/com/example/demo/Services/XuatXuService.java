@@ -1,5 +1,6 @@
 package com.example.demo.Services;
 
+import com.example.demo.Entities.MauSac;
 import com.example.demo.Entities.XuatXu;
 import com.example.demo.Repositories.XuatXuRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +44,9 @@ public class XuatXuService {
             throw new RuntimeException("Không tìm thấy chất liệu với ID: " + id);
         }
 
+    }
+
+    public XuatXu findById(UUID id) {
+        return xuatXuRepo.findById(id).orElse(null);
     }
 }
