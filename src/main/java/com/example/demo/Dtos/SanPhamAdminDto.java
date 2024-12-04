@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Getter
@@ -29,7 +31,7 @@ public class SanPhamAdminDto {
         private String theLoaiTen;
 //        private String hangTen;
         private Boolean trangThai;
-
+        private LocalDateTime ngaytao;
         // Constructor, getters và setters
 
 

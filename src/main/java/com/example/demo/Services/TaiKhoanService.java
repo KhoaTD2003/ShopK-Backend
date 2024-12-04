@@ -15,6 +15,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -104,58 +105,65 @@ public class TaiKhoanService {
         return repository.findByTenTaiKhoan(tenTaiKhoan) != null;
     }
 
+//    public String generateMaNguoiDung() {
+//        return "USER-" + UUID.randomUUID().toString(); // Mã người dùng sẽ có dạng USER-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+//    }
+
+    //    public String generateMaNguoiDung() {
+//        return "USER-" + Instant.now().toEpochMilli(); // USER-1677721623456
+//    }
     public String generateMaNguoiDung() {
-        return "USER-" + UUID.randomUUID().toString(); // Mã người dùng sẽ có dạng USER-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        return "USER-" + UUID.randomUUID().toString().substring(0, 4); // USER-xxxxxxxx
     }
 
     // Đăng ký tài khoản
-        public TaiKhoanDto register(TaiKhoanDto taiKhoanDto) {
-            if (!isEmailValid(taiKhoanDto.getEmail())) {
-                throw new IllegalArgumentException("Địa chỉ email không hợp lệ!");
-            }
-            // Kiểm tra xem tên tài khoản đã tồn tại chưa
-            if (repository.findByTenTaiKhoan(taiKhoanDto.getTenTaiKhoan()) != null) {
-                throw new IllegalArgumentException("Tên tài khoản đã tồn tại.");
-            }
-
-            // Kiểm tra xem email đã tồn tại chưa
-            if (repository.findByEmail(taiKhoanDto.getEmail()) != null) {
-                throw new IllegalArgumentException("Email đã được sử dụng.");
-            }
-
-            // Mã hóa mật khẩu trước khi lưu
-            TaiKhoan taiKhoan = new TaiKhoan();
-            taiKhoan.setTenTaiKhoan(taiKhoanDto.getTenTaiKhoan());
-            taiKhoan.setMatKhau(taiKhoanDto.getMatKhau());
-            taiKhoan.setSdt(taiKhoanDto.getSdt());
-            taiKhoan.setEmail(taiKhoanDto.getEmail());
-
-            taiKhoan.setRole("Khách Hàng");  // hoặc "Khách hàng" nếu bạn sử dụng tiếng Việt
-            taiKhoan.setTrangThai(true); // Đảm bảo tài khoản luôn được tạo với trạng thái "hoạt động"
-
-            // Lưu tài khoản mới vào cơ sở dữ liệu
-            TaiKhoan savedTaiKhoan = repository.save(taiKhoan);
-
-            NguoiDungDto nguoiDungDto = new NguoiDungDto();
-            nguoiDungDto.setMaNguoiDung(generateMaNguoiDung()); // Phương thức để tạo mã người dùng
-            nguoiDungDto.setHoTen(taiKhoanDto.getTenTaiKhoan()); // Giả sử bạn đã thêm trường hoTen vào TaiKhoanDto
-            nguoiDungDto.setEmail(taiKhoanDto.getEmail());
-            nguoiDungDto.setSdt(taiKhoanDto.getSdt());
-            nguoiDungDto.setIdTaiKhoan(savedTaiKhoan.getId()); // Lưu ID tài khoản vào người dùng
-            nguoiDungDto.setTrangThai(true); // Đảm bảo trạng thái người dùng là "hoạt động"
-
-            // Gọi phương thức để lưu người dùng mới
-            nguoiDungService.saveOrUpdateNguoiDung(nguoiDungDto);
-
-            // Trả về DTO sau khi đăng ký thành công
-            return new TaiKhoanDto(
-                    savedTaiKhoan.getTenTaiKhoan(),
-                    savedTaiKhoan.getMatKhau(),
-                    savedTaiKhoan.getSdt(),
-                    savedTaiKhoan.getEmail(),
-                    savedTaiKhoan.getRole()
-            );
+    public TaiKhoanDto register(TaiKhoanDto taiKhoanDto) {
+        if (!isEmailValid(taiKhoanDto.getEmail())) {
+            throw new IllegalArgumentException("Địa chỉ email không hợp lệ!");
         }
+        // Kiểm tra xem tên tài khoản đã tồn tại chưa
+        if (repository.findByTenTaiKhoan(taiKhoanDto.getTenTaiKhoan()) != null) {
+            throw new IllegalArgumentException("Tên tài khoản đã tồn tại.");
+        }
+
+        // Kiểm tra xem email đã tồn tại chưa
+        if (repository.findByEmail(taiKhoanDto.getEmail()) != null) {
+            throw new IllegalArgumentException("Email đã được sử dụng.");
+        }
+
+        // Mã hóa mật khẩu trước khi lưu
+        TaiKhoan taiKhoan = new TaiKhoan();
+        taiKhoan.setTenTaiKhoan(taiKhoanDto.getTenTaiKhoan());
+        taiKhoan.setMatKhau(taiKhoanDto.getMatKhau());
+        taiKhoan.setSdt(taiKhoanDto.getSdt());
+        taiKhoan.setEmail(taiKhoanDto.getEmail());
+
+        taiKhoan.setRole("Khách Hàng");  // hoặc "Khách hàng" nếu bạn sử dụng tiếng Việt
+        taiKhoan.setTrangThai(true); // Đảm bảo tài khoản luôn được tạo với trạng thái "hoạt động"
+
+        // Lưu tài khoản mới vào cơ sở dữ liệu
+        TaiKhoan savedTaiKhoan = repository.save(taiKhoan);
+
+        NguoiDungDto nguoiDungDto = new NguoiDungDto();
+        nguoiDungDto.setMaNguoiDung(generateMaNguoiDung()); // Phương thức để tạo mã người dùng
+        nguoiDungDto.setHoTen(taiKhoanDto.getTenTaiKhoan()); // Giả sử bạn đã thêm trường hoTen vào TaiKhoanDto
+        nguoiDungDto.setEmail(taiKhoanDto.getEmail());
+        nguoiDungDto.setSdt(taiKhoanDto.getSdt());
+        nguoiDungDto.setIdTaiKhoan(savedTaiKhoan.getId()); // Lưu ID tài khoản vào người dùng
+        nguoiDungDto.setTrangThai(true); // Đảm bảo trạng thái người dùng là "hoạt động"
+
+        // Gọi phương thức để lưu người dùng mới
+        nguoiDungService.saveOrUpdateNguoiDung(nguoiDungDto);
+
+        // Trả về DTO sau khi đăng ký thành công
+        return new TaiKhoanDto(
+                savedTaiKhoan.getTenTaiKhoan(),
+                savedTaiKhoan.getMatKhau(),
+                savedTaiKhoan.getSdt(),
+                savedTaiKhoan.getEmail(),
+                savedTaiKhoan.getRole()
+        );
+    }
 
 
     public TaiKhoan login(String tenTaiKhoan, String matKhau) {
@@ -169,25 +177,49 @@ public class TaiKhoanService {
             }
         }
 
-            // Kiểm tra nếu tài khoản tồn tại và mật khẩu khớp
+        // Kiểm tra nếu tài khoản tồn tại và mật khẩu khớp
+//        if (taiKhoan != null && taiKhoan.getMatKhau().equals(matKhau)) {
+//            // Kiểm tra vai trò của người dùng
+//            if ("Nhân Viên".equalsIgnoreCase(taiKhoan.getRole())) {
+//                // Nếu là nhân viên, bạn có thể trả về đối tượng TaiKhoan đã kiểm tra vai trò
+//                taiKhoan.setMatKhau("");  // Xóa mật khẩu trước khi trả về
+//                return taiKhoan;  // Trả về nhân viên
+//            } else if ("khách hàng".equalsIgnoreCase(taiKhoan.getRole())) {
+//                // Nếu là khách hàng, bạn cũng có thể trả về đối tượng TaiKhoan
+//                taiKhoan.setMatKhau("");  // Xóa mật khẩu trước khi trả về
+//                return taiKhoan;  // Trả về khách hàng
+//            } else {
+//                // Nếu vai trò không hợp lệ
+//                throw new IllegalArgumentException("Vai trò người dùng không hợp lệ.");
+//            }
+//        } else {
+//            // Trường hợp tài khoản không tồn tại hoặc mật khẩu sai
+//            throw new IllegalArgumentException("Tên tài khoản hoặc mật khẩu không chính xác");
+//        }
         if (taiKhoan != null && taiKhoan.getMatKhau().equals(matKhau)) {
+            // Kiểm tra nếu vai trò là Admin thì không cho phép đăng nhập
+            if ("admin".equalsIgnoreCase(taiKhoan.getRole())) {
+                throw new IllegalArgumentException("Tài khoản Admin không được phép đăng nhập.");
+            }
+
             // Kiểm tra vai trò của người dùng
             if ("Nhân Viên".equalsIgnoreCase(taiKhoan.getRole())) {
-                // Nếu là nhân viên, bạn có thể trả về đối tượng TaiKhoan đã kiểm tra vai trò
-                taiKhoan.setMatKhau("");  // Xóa mật khẩu trước khi trả về
-                return taiKhoan;  // Trả về nhân viên
+                // Nếu là nhân viên, trả về đối tượng TaiKhoan đã kiểm tra vai trò
+                taiKhoan.setMatKhau(""); // Xóa mật khẩu trước khi trả về
+                return taiKhoan; // Trả về nhân viên
             } else if ("Khách Hàng".equalsIgnoreCase(taiKhoan.getRole())) {
-                // Nếu là khách hàng, bạn cũng có thể trả về đối tượng TaiKhoan
-                taiKhoan.setMatKhau("");  // Xóa mật khẩu trước khi trả về
-                return taiKhoan;  // Trả về khách hàng
+                // Nếu là khách hàng, trả về đối tượng TaiKhoan
+                taiKhoan.setMatKhau(""); // Xóa mật khẩu trước khi trả về
+                return taiKhoan; // Trả về khách hàng
             } else {
                 // Nếu vai trò không hợp lệ
                 throw new IllegalArgumentException("Vai trò người dùng không hợp lệ.");
             }
         } else {
             // Trường hợp tài khoản không tồn tại hoặc mật khẩu sai
-            throw new IllegalArgumentException("Tên tài khoản hoặc mật khẩu không chính xác");
+            throw new IllegalArgumentException("Tên tài khoản hoặc mật khẩu không chính xác.");
         }
+
     }
 
     public void sendPasswordResetEmail(String email) {

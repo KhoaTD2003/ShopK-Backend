@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,5 +20,6 @@ public class DatDonRequest {
     private String tienGiam;
     private String ghiChu;
     private String maGiamGia;
+    private List<ChiTietSanPham> sanPhamList; // Danh sách sản phẩm
 
 }

@@ -6,12 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class SanPhamDto {
-
+    private UUID idSP; // Thêm thuộc tính ID sản phẩm
     private String tenSP;
     private String maSP;
     private BigDecimal giaBan;

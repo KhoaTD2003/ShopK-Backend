@@ -9,6 +9,8 @@
     import lombok.Setter;
 
     import java.math.BigDecimal;
+    import java.time.LocalDateTime;
+    import java.util.Date;
     import java.util.List;
     import java.util.UUID;
 
@@ -72,7 +74,17 @@
         @Column(name = "trangthai")
         private Boolean trangThai;
 
+        @Column(name = "ngaytao")
+        private LocalDateTime ngayTao;
     //    @OneToMany(mappedBy = "sanPham")
     //    @JsonManagedReference // Điều khiển việc tuần tự hóa
     //    private List<GioHang> gioHang;
+
+
+        @PrePersist
+        public void prePersist() {
+            if (this.ngayTao == null) {
+                this.ngayTao = LocalDateTime.now(); // Thiết lập giá trị createdAt khi thêm mới
+            }
+        }
     }

@@ -23,10 +23,10 @@ public class SanPhamService {
     @Autowired
     private SanPhamRepository spRepo;
 
-//    public Page<SanPhamDto> getAll(int pageNumber) {
-//        Pageable pageable = PageRequest.of(pageNumber, 12);
-//        return spRepo.findAllProductDetails(pageable);
-//    }
+    public Page<SanPhamDto> getAll(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12);
+        return spRepo.findAllProductDetails(pageable);
+    }
 
     public SanPham add(SanPham sanPham){
         return spRepo.save(sanPham);
@@ -161,12 +161,12 @@ public class SanPhamService {
 
         // Nếu không có sản phẩm nào, bắt đầu từ SP001
         if (maxProductNumber == null) {
-            return "SP001";
+            return "SP01";
         }
 
         // Tăng số lên 1 và tạo mã mới theo định dạng SPxxx
         int newProductNumber = maxProductNumber + 1;
-        return String.format("SP%03d", newProductNumber);
+        return String.format("SP%3d", newProductNumber);
     }
     // Kiểm tra mã sản phẩm đã tồn tại hay chưa
     public boolean isProductCodeExist(String maSP) {

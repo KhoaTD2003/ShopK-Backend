@@ -1,15 +1,20 @@
 package com.example.demo.Entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
     @Getter
     @Setter
     @Entity
     @Table(name = "ThuongHieu")
+    @AllArgsConstructor
+    @NoArgsConstructor
     public class ThuongHieu {
 
         @Id
@@ -22,7 +27,15 @@ import java.util.UUID;
         @Column(nullable = true)
         private String ten;
 
-        // Getters and setters
+        @Column(name = "ngaytao")
+        private LocalDateTime ngayTao;
 
+
+        @PrePersist
+        public void prePersist() {
+            if (this.ngayTao == null) {
+                this.ngayTao = LocalDateTime.now(); // Thiết lập giá trị createdAt khi thêm mới
+            }
+        }
 
 }

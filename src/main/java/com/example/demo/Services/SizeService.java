@@ -2,8 +2,13 @@ package com.example.demo.Services;
 
 import com.example.demo.Entities.MauSac;
 import com.example.demo.Entities.Size;
+import com.example.demo.Entities.XuatXu;
 import com.example.demo.Repositories.SizeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +21,33 @@ public class SizeService {
 
     public List<Size> getAll() {
         return sRepo.findAll();
+    }
+
+    public Page<Size> getAll(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+        return sRepo.findAll(pageable);
+    }
+
+    public String GenarateSizeCode() {
+        // Lấy mã sản phẩm lớn nhất từ cơ sở dữ liệu
+        Integer maxBrandNumber = sRepo.getMaxSizeCode();
+
+        // Nếu không có sản phẩm nào, bắt đầu từ SP001
+        if (maxBrandNumber == null) {
+            return "S01";
+        }
+
+        // Tăng số lên 1 và tạo mã mới theo định dạng SPxxx
+        int newBrandNumber = maxBrandNumber + 1;
+        return String.format("S%3d", newBrandNumber);
+    }
+    // Kiểm tra mã sản phẩm đã tồn tại hay chưa
+    public boolean isSizeCodeExist(String ma) {
+        return sRepo.existsByMa(ma); // Kiểm tra mã sản phẩm có tồn tại trong cơ sở dữ liệu
+    }
+
+    public boolean existsByName(String name) {
+        return sRepo.existsByTen(name); // Gọi repo để kiểm tra
     }
 
     public Size add(Size size){
