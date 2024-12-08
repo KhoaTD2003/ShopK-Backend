@@ -68,6 +68,7 @@ public class HoaDonService {
             throw new RuntimeException("không tìm thấy Hóa Đơn ID "+id);
         }
     }
+
     // delete dữ liệu theo id
     public void delete(UUID id){
         Optional<HoaDon>optionalHoaDon = repository.findById(id);
@@ -77,8 +78,6 @@ public class HoaDonService {
             throw new RuntimeException("không tìm thấy hóa đơn ID "+id);
         }
     }
-
-
 
 
     public List<ChiTietHoaDon> updateChiTietHoaDonStatus(UUID hoaDonId, boolean newStatus) {
@@ -110,6 +109,22 @@ public class HoaDonService {
         return chiTietHoaDons;
     }
 
+    //tim kh theo sdt
+//    public String getTenKHBySdt(String sdt) {
+//        List<HoaDon> hoaDons = repository.findBySdt(sdt);
+//        if (!hoaDons.isEmpty()) {
+//            return hoaDons.get(0).getTenKH(); // Lấy tên khách hàng từ hóa đơn đầu tiên
+//        }
+//        return null;
+//    }
+
+    public String getLatestTenKHBySdt(String sdt) {
+        List<HoaDon> hoaDons = repository.findLatestBySdt(sdt);
+        if (!hoaDons.isEmpty()) {
+            return hoaDons.get(0).getTenKH(); // Lấy tên khách hàng từ hóa đơn mới nhất
+        }
+        return null; // Trả về null nếu không tìm thấy
+    }
 //    public List<ChiTietHoaDon> updateChiTietHoaDonStatus(UUID hoaDonId, boolean newStatus) {
 //        // Lấy tất cả các chi tiết hóa đơn theo ID hóa đơn
 //        List<ChiTietHoaDon> chiTietHoaDons = chiTietHoaDonRepository.findByHoaDonId(hoaDonId);

@@ -9,10 +9,7 @@ import com.example.demo.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -228,16 +225,40 @@ public class DatHangController {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi lưu chi tiết hóa đơn");
                 }
             }
-            // Kiểm tra mã giảm giá
+//            // Kiểm tra mã giảm giá
+//            if (request.getMaGiamGia() != null) {
+//                if (giamGiaService.getByMa(request.getMaGiamGia()).isEmpty()) {
+//                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá không hợp lệ");
+//                } else if (giamGiaService.getByMa(request.getMaGiamGia()).get().getSoLansd() == 0) {
+//                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá đã hết lượt sử dụng");
+//                }
+//                giamGiaService.giamSoLanSuDung(request.getMaGiamGia());
+//            }
+// Kiểm tra mã giảm giá
             if (request.getMaGiamGia() != null) {
-                if (giamGiaService.getByMa(request.getMaGiamGia()).isEmpty()) {
+                // Lấy mã giảm giá từ request
+                String maGiamGia = request.getMaGiamGia();
+
+                // Kiểm tra mã giảm giá có tồn tại không
+                Optional<GiamGia> giamGiaOptional = giamGiaService.getByMa(maGiamGia);
+                if (giamGiaOptional.isEmpty()) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá không hợp lệ");
-                } else if (giamGiaService.getByMa(request.getMaGiamGia()).get().getSoLansd() == 0) {
+                } else if (giamGiaOptional.get().getSoLansd() == 0) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá đã hết lượt sử dụng");
                 }
-                giamGiaService.giamSoLanSuDung(request.getMaGiamGia());
-            }
 
+                Date ngayBatDau = giamGiaOptional.get().getNgayBatDau();
+                Date ngayKetThuc = giamGiaOptional.get().getNgayBatDau();
+                Date now = new Date();
+                if(now.before(ngayBatDau)){
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá chưa bắt đầu");
+                }else if(ngayBatDau.after(ngayKetThuc)){
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá hết hiệu lực");
+                }
+
+                // Giảm số lần sử dụng mã giảm giá
+                giamGiaService.giamSoLanSuDung(maGiamGia);
+            }
             return ResponseEntity.ok("Đặt đơn thành công và hóa đơn đã được thanh toán");
 
         } catch (Exception e) {
@@ -245,6 +266,24 @@ public class DatHangController {
         }
     }
 
+    @GetMapping("/find")
+    public String getTenKH(@RequestParam String sdt) {
+        String tenKH = hoaDonService.getLatestTenKHBySdt(sdt);
+        if (tenKH != null) {
+            return tenKH; // Trả về tên khách hàng
+        } else {
+            return "Vui lòng nhập lại sdt"; // Thông báo nếu không tìm thấy
+        }
+    }
+//    @GetMapping("/find")
+//    public String getTenKH(@RequestParam String sdt) {
+//        String tenKH = hoaDonService.getTenKHBySdt(sdt);
+//        if (tenKH != null) {
+//            return tenKH; // Trả về tên khách hàng
+//        } else {
+//            return "Không tìm thấy khách hàng với số điện thoại này."; // Thông báo nếu không tìm thấy
+//        }
+//    }
 }
 
 
