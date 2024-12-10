@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
@@ -45,6 +46,8 @@ public class GiamGia {
     @Column(name = "ngaytao")
     private LocalDateTime ngayTao;
 
+    @Column(name = "giaTriToiThieu")
+    private BigDecimal giaTriMin;
 
     @PrePersist
     public void prePersist() {

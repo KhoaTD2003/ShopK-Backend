@@ -38,16 +38,22 @@ public interface SanPhamRepository extends JpaRepository<SanPham, UUID> {
 //            "WHERE LOWER(s.tenSP) LIKE LOWER(CONCAT('%', :tenSP, '%'))")
 //    List<SanPhamDto> findProductsByName(@Param("tenSP") String tenSP);
 
-    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh,s.moTa, s.thuongHieu,s.theLoai,s.size,s.mauSac) " +
-            "FROM SanPham s " +
-            "WHERE (:tenSP IS NULL OR s.tenSP LIKE %:tenSP%) " +
-            "ORDER BY " +
-            "CASE WHEN :sortOrder = 'asc' THEN s.giaBan END ASC, " +
-            "CASE WHEN :sortOrder = 'desc' THEN s.giaBan END DESC")
-    Page<SanPhamDto> searchAndSortProductsByName(
-            @Param("tenSP") String tenSP,
-            @Param("sortOrder") String sortOrder,
-            Pageable pageable);
+//    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh,s.moTa, s.thuongHieu,s.theLoai,s.size,s.mauSac) " +
+//            "FROM SanPham s " +
+//            "WHERE (:tenSP IS NULL OR s.tenSP LIKE %:tenSP%) " +
+//            "ORDER BY " +
+//            "CASE WHEN :sortOrder = 'asc' THEN s.giaBan END ASC, " +
+//            "CASE WHEN :sortOrder = 'desc' THEN s.giaBan END DESC")
+//    Page<SanPhamDto> searchAndSortProductsByName(
+//            @Param("tenSP") String tenSP,
+//            @Param("sortOrder") String sortOrder,
+//            Pageable pageable);
+@Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id, s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa, s.thuongHieu, s.theLoai, s.size, s.mauSac) " +
+        "FROM SanPham s " +
+        "WHERE (:tenSP IS NULL OR s.tenSP LIKE %:tenSP%)")
+Page<SanPhamDto> searchAndSortProductsByName(
+        @Param("tenSP") String tenSP,
+        Pageable pageable);
 
 
     @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa, s.thuongHieu,s.theLoai,s.size,s.mauSac) " +

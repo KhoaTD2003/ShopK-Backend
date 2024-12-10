@@ -19,4 +19,12 @@ public interface GiamGiaRepository extends JpaRepository<GiamGia, UUID> {
     @Transactional
     @Query("UPDATE GiamGia g SET g.soLansd = ?2 WHERE g.id = ?1")
     void updateSoLansd(UUID id, int newSoLansd);
+
+    @Query(value = "SELECT MAX(CAST(SUBSTRING(ma, 3, LEN(ma)) AS INT)) FROM Size WHERE ma LIKE 'GG%'", nativeQuery = true)
+    Integer getMaxDiscountCode();
+
+    boolean existsByMa(String ma);
+
+    boolean existsByTen(String ten); // Tự động sinh truy vấn kiểm tra tên
+
 }

@@ -1,8 +1,13 @@
 package com.example.demo.Services;
 
 import com.example.demo.Entities.GiamGia;
+import com.example.demo.Entities.Size;
 import com.example.demo.Repositories.GiamGiaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -86,4 +91,32 @@ public class GiamGiaService {
         }
         return null; // Trả về null nếu không tìm thấy mã giảm giá
     }
+
+    public Page<GiamGia> getAll(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+        return repository.findAll(pageable);
+    }
+
+    public String GenarateSizeCode() {
+        // Lấy mã sản phẩm lớn nhất từ cơ sở dữ liệu
+        Integer maxBrandNumber = repository.getMaxDiscountCode();
+
+        // Nếu không có sản phẩm nào, bắt đầu từ SP001
+        if (maxBrandNumber == null) {
+            return "GG01";
+        }
+
+        // Tăng số lên 1 và tạo mã mới theo định dạng SPxxx
+        int newBrandNumber = maxBrandNumber + 1;
+        return String.format("GG%3d", newBrandNumber);
+    }
+    // Kiểm tra mã sản phẩm đã tồn tại hay chưa
+    public boolean isSizeCodeExist(String ma) {
+        return repository.existsByMa(ma); // Kiểm tra mã sản phẩm có tồn tại trong cơ sở dữ liệu
+    }
+
+    public boolean existsByName(String name) {
+        return repository.existsByTen(name); // Gọi repo để kiểm tra
+    }
+
 }

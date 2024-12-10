@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -115,7 +117,7 @@ public class DatHangController {
             hoaDon.setGhiChu(request.getGhiChu());
 //          hoaDon.setNgayTao(new Date());
             hoaDon.setNgayTao(LocalDateTime.now());
-            hoaDon.setTrangThai("Chưa thanh toán");
+            hoaDon.setTrangThai("Chưa Thanh Toán");
 //          hoaDon.setTrangThai(HoaDonStatus.PENDING); // Gán enum thay vì chuỗi "Chưa thanh toán"
 
             // Gán ID tài khoản vào hóa đơn
@@ -193,7 +195,7 @@ public class DatHangController {
             hoaDon.setTienGiam(request.getTienGiam());
             hoaDon.setGhiChu(request.getGhiChu());
             hoaDon.setNgayTao(LocalDateTime.now());
-            hoaDon.setTrangThai("Đã thanh toán");
+            hoaDon.setTrangThai("Đã Thanh Toán");
 
             // Gán ID tài kh    oản vào hóa đơn
 //            TaiKhoan taiKhoan = new TaiKhoan(idTaiKhoan);
@@ -226,16 +228,7 @@ public class DatHangController {
                 }
             }
 //            // Kiểm tra mã giảm giá
-//            if (request.getMaGiamGia() != null) {
-//                if (giamGiaService.getByMa(request.getMaGiamGia()).isEmpty()) {
-//                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá không hợp lệ");
-//                } else if (giamGiaService.getByMa(request.getMaGiamGia()).get().getSoLansd() == 0) {
-//                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá đã hết lượt sử dụng");
-//                }
-//                giamGiaService.giamSoLanSuDung(request.getMaGiamGia());
-//            }
-// Kiểm tra mã giảm giá
-            if (request.getMaGiamGia() != null) {
+              if (request.getMaGiamGia() != null) {
                 // Lấy mã giảm giá từ request
                 String maGiamGia = request.getMaGiamGia();
 
@@ -247,14 +240,37 @@ public class DatHangController {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá đã hết lượt sử dụng");
                 }
 
-                Date ngayBatDau = giamGiaOptional.get().getNgayBatDau();
-                Date ngayKetThuc = giamGiaOptional.get().getNgayBatDau();
-                Date now = new Date();
-                if(now.before(ngayBatDau)){
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá chưa bắt đầu");
-                }else if(ngayBatDau.after(ngayKetThuc)){
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá hết hiệu lực");
-                }
+                  // Kiểm tra giá trị tối thiểu
+                  BigDecimal giaTriMin = giamGiaOptional.get().getGiaTriMin();
+                  BigDecimal tongTien = new BigDecimal(request.getTongTien());
+                  if (tongTien.compareTo(giaTriMin) < 0) {
+                      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tổng giá trị đơn hàng chưa đủ để áp dụng mã giảm giá");
+                  }
+
+
+//                Date ngayBatDau = giamGiaOptional.get().getNgayBatDau();
+//                Date ngayKetThuc = giamGiaOptional.get().getNgayBatDau();
+//                Date now = new Date();
+//                if(now.before(ngayBatDau)){
+//                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá chưa bắt đầu");
+//                }else if(ngayBatDau.after(ngayKetThuc)){
+//                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá hết hiệu lực");
+//                }
+                  Date ngayBatDauDate = giamGiaOptional.get().getNgayBatDau(); // Date từ backend
+                  Date ngayKetThucDate = giamGiaOptional.get().getNgayKetThuc(); // Date từ backend
+
+// Chuyển Date sang LocalDate
+                  LocalDate ngayBatDau = ngayBatDauDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                  LocalDate ngayKetThuc = ngayKetThucDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+// Lấy ngày hiện tại
+                  LocalDate now = LocalDate.now();
+
+                  if (now.isBefore(ngayBatDau)) {
+                      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá chưa bắt đầu");
+                  } else if (now.isAfter(ngayKetThuc)) {
+                      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá hết hiệu lực");
+                  }
 
                 // Giảm số lần sử dụng mã giảm giá
                 giamGiaService.giamSoLanSuDung(maGiamGia);
@@ -272,7 +288,7 @@ public class DatHangController {
         if (tenKH != null) {
             return tenKH; // Trả về tên khách hàng
         } else {
-            return "Vui lòng nhập lại sdt"; // Thông báo nếu không tìm thấy
+            return null; // Thông báo nếu không tìm thấy
         }
     }
 //    @GetMapping("/find")

@@ -1,13 +1,16 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.Entities.GiamGia;
+import com.example.demo.Entities.Size;
 import com.example.demo.Services.GiamGiaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,7 +22,7 @@ public class GiamGiaController {
 
     // Lấy tất cả giảm giá
     @GetMapping
-    public ResponseEntity<List<GiamGia>> getAllGiamGia() {
+    public ResponseEntity<List<GiamGia>> getAll() {
         List<GiamGia> giamGias = service.getAll();
         return new ResponseEntity<>(giamGias, HttpStatus.OK);
     }
@@ -37,15 +40,15 @@ public class GiamGiaController {
 
 
     // Thêm giảm giá mới
-    @PostMapping
-    public ResponseEntity<GiamGia> addGiamGia(@RequestBody GiamGia giamGia) {
-        try {
-            GiamGia savedGiamGia = service.add(giamGia);
-            return new ResponseEntity<>(savedGiamGia, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @PostMapping
+//    public ResponseEntity<GiamGia> addGiamGia(@RequestBody GiamGia giamGia) {
+//        try {
+//            GiamGia savedGiamGia = service.add(giamGia);
+//            return new ResponseEntity<>(savedGiamGia, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//    }
     // API kiểm tra và giảm số lần sử dụng mã giảm giá
 //    @PostMapping("/sudung")
 //    public ResponseEntity<String> suDungGiamGia(@RequestParam String maGiamGia) {
@@ -78,6 +81,11 @@ public class GiamGiaController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @PutMapping("/discount/{id}")
+    public ResponseEntity<GiamGia> update(@PathVariable UUID id, @RequestBody GiamGia giamGia) {
+        GiamGia gg = service.update(id, giamGia);
+        return ResponseEntity.ok(gg);
+    }
 
     @GetMapping("/code")
     public ResponseEntity<?> getDiscountByCode(@RequestParam String maGiamGia) {
@@ -101,4 +109,32 @@ public class GiamGiaController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/page")
+    public Page<GiamGia> getAllGiamGia(@RequestParam(defaultValue = "0") int pageNumber) {
+        return service.getAll(pageNumber);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> add(@RequestBody GiamGia giamGia) {
+        // Kiểm tra mã sản phẩm có tồn tại không
+        if (service.isSizeCodeExist(giamGia.getMa())) {
+            return ResponseEntity.badRequest().body("Mã đã tồn tại");
+        }
+        if (service.existsByName(giamGia.getTen())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "Tên giảm giá đã tồn tại!"));
+        }
+        // Nếu mã thương hiệu chưa có, tự động sinh mã mới
+//        if (xuatXu.getMa() == null || xuatXu.getMa().isEmpty()) {
+//            String newBrandCode = sService.GenarateSizeCode(); // Hàm tạo mã mới
+//            xuatXu.setMa(newBrandCode); // Gán mã mới vào thương hiệu
+//        }
+
+        // Lưu thương hiệu vào cơ sở dữ liệu
+        GiamGia createdGiamGia= service.add(giamGia);
+
+        return new ResponseEntity<>(createdGiamGia, HttpStatus.CREATED);
+    }
+
 }

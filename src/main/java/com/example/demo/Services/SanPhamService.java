@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
@@ -77,10 +78,23 @@ public class SanPhamService {
     }
 
     //search sp theo tên và sort
+//    public Page<SanPhamDto> searchAndSortProducts(String tenSP, String sortOrder, int pageNumber) {
+//        Pageable pageable = PageRequest.of(pageNumber, 12);
+//        return spRepo.searchAndSortProductsByName(tenSP, sortOrder,pageable);
+//    }
     public Page<SanPhamDto> searchAndSortProducts(String tenSP, String sortOrder, int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 12);
-        return spRepo.searchAndSortProductsByName(tenSP, sortOrder,pageable);
+        // Tạo đối tượng Sort tùy thuộc vào giá trị của sortOrder (asc hoặc desc)
+        Sort sort = (sortOrder != null && sortOrder.equalsIgnoreCase("desc"))
+                ? Sort.by(Sort.Order.desc("giaBan"))  // Sắp xếp giảm dần theo giá
+                : Sort.by(Sort.Order.asc("giaBan"));  // Sắp xếp tăng dần theo giá
+
+        // Tạo Pageable với phân trang và sắp xếp
+        Pageable pageable = PageRequest.of(pageNumber, 12, sort);
+
+        // Gọi phương thức tìm kiếm và phân trang từ repository
+        return spRepo.searchAndSortProductsByName(tenSP, pageable);
     }
+
 
     public Page<SanPhamDto> findByThuongHieu(String thuongHieu, int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, 12);
