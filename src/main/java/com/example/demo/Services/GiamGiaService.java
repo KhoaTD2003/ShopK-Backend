@@ -74,14 +74,7 @@ public class GiamGiaService {
         return false; // Không thể giảm số lần sử dụng (mã hết hạn hoặc không hợp lệ)
     }
 
-    //    public GiamGia updateSoLansd(UUID id, int newSoLansd) {
-//        GiamGia giamGia = repository.findById(id).orElse(null);
-//        if (giamGia != null) {
-//            giamGia.setSoLansd(newSoLansd);
-//            return repository.save(giamGia);
-//        }
-//        return null;
-//    }
+
     public GiamGia updateSoLansd(UUID id, int newSoLansd) {
         Optional<GiamGia> giamGiaOpt = repository.findById(id);
         if (giamGiaOpt.isPresent()) {

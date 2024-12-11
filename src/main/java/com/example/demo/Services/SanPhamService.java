@@ -2,6 +2,7 @@ package com.example.demo.Services;
 
 import com.example.demo.Dtos.SanPhamAdminDto;
 import com.example.demo.Dtos.SanPhamDto;
+import com.example.demo.Entities.GiamGia;
 import com.example.demo.Entities.NguoiDung;
 import com.example.demo.Entities.SanPham;
 import com.example.demo.Entities.TaiKhoan;
@@ -186,4 +187,18 @@ public class SanPhamService {
     public boolean isProductCodeExist(String maSP) {
         return spRepo.existsByMaSP(maSP); // Kiểm tra mã sản phẩm có tồn tại trong cơ sở dữ liệu
     }
+
+//    public boolean giamSoLuong(String maSp) {
+//        Optional<SanPham> optionalSanPham = spRepo.findByMa(maSp);
+//        if (optionalSanPham.isPresent()) {
+//            SanPham sp = optionalSanPham.get();
+//            if (sp.getSoLuongTon() > 0) {
+//                sp.setSoLuongTon(sp.getSoLuongTon() - 1); // Giảm số lần sử dụng
+//                spRepo.save(sp);
+//                return true;
+//            }
+//        }
+//        return false; // Không thể giảm số lần sử dụng (mã hết hạn hoặc không hợp lệ)
+//    }
+
 }

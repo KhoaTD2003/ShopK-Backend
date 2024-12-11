@@ -18,6 +18,7 @@ public class SanPhamDto {
     private BigDecimal giaBan;
     private String anh;
     private String mota;
+    private Integer stock;
     private ThuongHieu thuongHieu;
     private TheLoai theLoai;
     private Size size;
