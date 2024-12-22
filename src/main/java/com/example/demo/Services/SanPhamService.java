@@ -139,6 +139,11 @@ public class SanPhamService {
         return spRepo.findAllProduct(pageable);
     }
 
+    public Page<SanPhamAdminDto> getAllProducts2(String tenSP,int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12);
+        return spRepo.searchByName(tenSP,pageable);
+    }
+
     public boolean updateStatusProduct(UUID userId, boolean trangThai) {
         SanPham sanPham = spRepo.findById(userId).orElse(null);
         if (sanPham != null) {

@@ -140,11 +140,34 @@ public class TaiKhoanAdmin {
     }
     //sản phẩm
 
+//    @GetMapping("/product")
+//    public ResponseEntity<Page<SanPhamAdminDto>> getAllProducts(@RequestParam(defaultValue = "0") int page) {
+//        Page<SanPhamAdminDto> products = sanPhamService.getAllProducts(page);
+//        return ResponseEntity.ok(products);
+//    }
+
     @GetMapping("/product")
-    public ResponseEntity<Page<SanPhamAdminDto>> getAllProducts(@RequestParam(defaultValue = "0") int page) {
-        Page<SanPhamAdminDto> products = sanPhamService.getAllProducts(page);
-        return ResponseEntity.ok(products);
+    public ResponseEntity<Page<SanPhamAdminDto>> getAllProducts(
+            @RequestParam(value = "tenSP", required = false, defaultValue = "") String tenSP,
+            @RequestParam(value = "page", defaultValue = "0") int page) {
+        try {
+            Page<SanPhamAdminDto> products;
+
+            // Kiểm tra nếu `tenSP` không rỗng, thực hiện tìm kiếm theo tên
+            if (tenSP != null && !tenSP.trim().isEmpty()) {
+                products = sanPhamService.getAllProducts2(tenSP, page);
+            } else {
+                // Ngược lại, trả về toàn bộ sản phẩm
+                products = sanPhamService.getAllProducts(page);
+            }
+
+            return ResponseEntity.ok(products); // Trả về kết quả
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Xử lý lỗi
+        }
     }
+
+
 
     @PutMapping("/upStatusProduct/{productId}")
     public String updateStatusProduct(@PathVariable("productId") UUID productId, @RequestParam("trangThai") boolean trangThai) {

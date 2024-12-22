@@ -97,6 +97,29 @@ import java.util.stream.Collectors;
             }
         }
 
+    public NguoiDung saveOrUpdateNguoiDung2(NguoiDungDto nguoiDungDto) {
+        // Tìm người dùng theo ID tài khoản
+        NguoiDung existingUser = nguoiDungRepository.findFirstByTaiKhoanId(nguoiDungDto.getIdTaiKhoan());
+
+        if (existingUser != null) {
+            // Cập nhật thông tin người dùng
+            existingUser.setHoTen(nguoiDungDto.getHoTen());
+            existingUser.setDiaChi(nguoiDungDto.getDiaChi());
+            existingUser.setEmail(nguoiDungDto.getEmail());
+            existingUser.setSdt(nguoiDungDto.getSdt());
+            return nguoiDungRepository.save(existingUser); // Cập nhật bản ghi hiện có
+        } else {
+            // Tạo người dùng mới
+            NguoiDung newUser = new NguoiDung();
+            newUser.setMaNguoiDung(nguoiDungDto.getMaNguoiDung());
+//            newUser.setTaiKhoan(new TaiKhoan(nguoiDungDto.getIdTaiKhoan())); // Tạo đối tượng TaiKhoan với ID
+            newUser.setHoTen(nguoiDungDto.getHoTen());
+            newUser.setDiaChi(nguoiDungDto.getDiaChi());
+            newUser.setEmail(nguoiDungDto.getEmail());
+            newUser.setSdt(nguoiDungDto.getSdt());
+            return nguoiDungRepository.save(newUser); // Lưu người dùng mới
+        }
+    }
 //admin page
 
         public List<NguoiDung> getUsersByRole(String role) {

@@ -56,7 +56,7 @@ public class HoaDonController {
     }
 
     @GetMapping("/billdetail/{id}")
-    public ResponseEntity<List<ChiTietHoaDonDto>> getChiTietHoaDon(@PathVariable String id) {
+    public ResponseEntity<List<ChiTietHoaDonDto>> getChiTietHoaDon(@PathVariable("id") String id) {
         List<ChiTietHoaDonDto> chiTietList = chiTietHoaDonService.getChiTietHoaDonById(UUID.fromString(id));
         if (chiTietList.isEmpty()) {
             return ResponseEntity.notFound().build(); // Trả về 404 nếu không tìm thấy

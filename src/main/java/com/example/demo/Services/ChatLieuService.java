@@ -36,12 +36,12 @@ public class ChatLieuService {
 
         // Nếu không có sản phẩm nào, bắt đầu từ SP001
         if (maxBrandNumber == null) {
-            return "TL01";
+            return "CL01";
         }
 
         // Tăng số lên 1 và tạo mã mới theo định dạng SPxxx
         int newBrandNumber = maxBrandNumber + 1;
-        return String.format("TL%3d", newBrandNumber);
+        return String.format("CL%3d", newBrandNumber);
     }
     // Kiểm tra mã sản phẩm đã tồn tại hay chưa
     public boolean isMaterialCodeExist(String ma) {

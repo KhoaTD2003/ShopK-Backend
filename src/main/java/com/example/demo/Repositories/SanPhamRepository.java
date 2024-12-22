@@ -112,6 +112,21 @@ Page<SanPhamDto> searchAndSortProductsByName(
             + "ORDER BY sp.ngayTao DESC ") // Sắp xếp theo ngày tạo
     Page<SanPhamAdminDto> findAllProduct(Pageable pageable);
 
+    @Query("SELECT new com.example.demo.Dtos.SanPhamAdminDto(sp.id, sp.maSP, sp.tenSP, sp.giaBan, sp.soLuongTon, sp.moTa, sp.anh, "
+            + "th.ten, sz.ten, ms.ten, cl.ten, xx.ten, tl.ten, sp.trangThai,sp.ngayTao) "
+            + "FROM SanPham sp "
+            + "JOIN sp.thuongHieu th "
+            + "JOIN sp.size sz "
+            + "JOIN sp.mauSac ms "
+            + "JOIN sp.chatLieu cl "
+            + "JOIN sp.xuatXu xx "
+            + "JOIN sp.theLoai tl "
+          +  "WHERE (:tenSP IS NULL OR sp.tenSP LIKE %:tenSP%)")
+    Page<SanPhamAdminDto> searchByName(
+            @Param("tenSP") String tenSP,
+            Pageable pageable);
+
+
     void delete(SanPham sanPham);
 
 //    @Query("SELECT MAX(p.maSP) FROM SanPham p")

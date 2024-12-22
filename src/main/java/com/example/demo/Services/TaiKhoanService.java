@@ -151,8 +151,7 @@ public class TaiKhoanService {
         nguoiDungDto.setSdt(taiKhoanDto.getSdt());
         nguoiDungDto.setIdTaiKhoan(savedTaiKhoan.getId()); // Lưu ID tài khoản vào người dùng
         nguoiDungDto.setTrangThai(true); // Đảm bảo trạng thái người dùng là "hoạt động"
-
-        // Gọi phương thức để lưu người dùng mới
+        System.out.println("ID của tài khoản đã lưu: " + savedTaiKhoan.getId());
         nguoiDungService.saveOrUpdateNguoiDung(nguoiDungDto);
 
         // Trả về DTO sau khi đăng ký thành công

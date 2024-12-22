@@ -15,6 +15,7 @@ import java.util.List;
 @Setter
 public class DatDonRequest {
     private NguoiDungDto nguoiDung;
+    private String maHoaDon;
     private String tongTien;
     private String tienThu;
     private String tienGiam;

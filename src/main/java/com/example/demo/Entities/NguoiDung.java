@@ -24,7 +24,7 @@ public class NguoiDung {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "manguoidung", unique = true, nullable = false)
+    @Column(name = "manguoidung", unique = true, nullable = true)
     private String maNguoiDung;
 
     @OneToOne(fetch = FetchType.LAZY) // Tham chiếu đến bảng TaiKhoan

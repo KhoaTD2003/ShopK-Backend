@@ -21,38 +21,6 @@ public class SanPhamController {
     @Autowired
     private SanPhamService spService;
 
-//    @GetMapping()
-//    public ResponseEntity<?> getAll(
-//            @RequestParam(value = "search", required = false) String search,
-//            @RequestParam(value = "sortOrder", required = false) String sortOrder,
-//            @RequestParam(value = "thuonghieu", required = false) String thuongHieu,
-//            @RequestParam(value = "theloai", required = false) String theLoai,
-//            @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber) {
-//
-//        String sort = (sortOrder != null) ? sortOrder : "desc";
-//
-//        // Nếu có tham số `thuongHieu`, trả về danh sách không phân trang theo thương hiệu
-//        if (thuongHieu != null) {
-//            List<SanPhamDto> productsByBrand = spService.findByThuongHieu(thuongHieu);
-//            return ResponseEntity.ok(productsByBrand != null ? productsByBrand : List.of());
-//        }
-//
-//        // Nếu có tham số `theLoai`, trả về danh sách không phân trang theo thể loại
-//        if (theLoai != null) {
-//            List<SanPhamDto> productsByCategory = spService.findByTheLoai(theLoai);
-//            return ResponseEntity.ok(productsByCategory != null ? productsByCategory : List.of());
-//        }
-//
-//        // Nếu có `search`, thực hiện tìm kiếm và sắp xếp nếu có `sortOrder`
-//        if (search != null) {
-//            Page<SanPhamDto> searchedProducts = spService.searchAndSortProducts(search, sort, pageNumber);
-//            return ResponseEntity.ok(searchedProducts);
-//        }
-//
-//        // Trả về tất cả sản phẩm có phân trang và sắp xếp theo giá
-//        Page<SanPhamDto> sortedProducts = spService.getAllProductDetailsSortedByPrice(sort, pageNumber);
-//        return ResponseEntity.ok(sortedProducts);
-//    }
     @GetMapping()
     public Page<SanPhamDto> getAll(@RequestParam(value = "search", required = false) String search,
                                    @RequestParam(value = "sortOrder", required = false) String sortOrder,

@@ -47,31 +47,60 @@ public class ChiTietHoaDonService {
 //    }
 
     public List<ChiTietHoaDonDto> getChiTietHoaDonById(UUID idHoaDon) {
-        List<ChiTietHoaDon> chiTietHoaDonList = repository.findByHoaDonId(idHoaDon);
+            List<ChiTietHoaDon> chiTietHoaDonList = repository.findByHoaDonId(idHoaDon);
 
-        // Lấy hóa đơn từ repository
-        HoaDon hoaDon = hoaDonRepository.findById(idHoaDon).orElseThrow(() -> new RuntimeException("Hoa Don not found"));
+    // Lấy hóa đơn từ repository
+    HoaDon hoaDon = hoaDonRepository.findById(idHoaDon).orElseThrow(() -> new RuntimeException("Hoa Don not found"));
 
-        // Lấy giá trị giảm giá từ hóa đơn, chuyển đổi thành BigDecimal nếu có
-        final BigDecimal giamGia = hoaDon.getTienGiam() != null ? new BigDecimal(hoaDon.getTienGiam()) : BigDecimal.ZERO;
+    // Lấy giá trị giảm giá từ hóa đơn, chuyển đổi thành BigDecimal nếu có
+    final BigDecimal giamGia = hoaDon.getTienGiam() != null ? new BigDecimal(hoaDon.getTienGiam()) : BigDecimal.ZERO;
 
         return chiTietHoaDonList.stream().map(chiTiet -> {
-            ChiTietHoaDonDto dto = new ChiTietHoaDonDto();
-            dto.setId(chiTiet.getHoaDon().getId());
-            dto.setMaHoaDon(chiTiet.getHoaDon().getMaHoaDon()); // Lấy mã hóa đơn
-            dto.setTenSanPham(chiTiet.getSanPham().getTenSP()); // Lấy tên sản phẩm
-            dto.setSoLuong(chiTiet.getSoLuong());
-            dto.setDonGia(chiTiet.getDonGia());
-            dto.setTongTien(chiTiet.getTongTien());
-            dto.setGhiChu(chiTiet.getGhiChu()); // Lấy ghi chú
-            dto.setTrangThai(chiTiet.getTrangThai()); // Lấy trạng thái
+                ChiTietHoaDonDto dto = new ChiTietHoaDonDto();
+                dto.setId(chiTiet.getHoaDon().getId());
+                dto.setMaHoaDon(chiTiet.getHoaDon().getMaHoaDon()); // Lấy mã hóa đơn
+                dto.setTenSanPham(chiTiet.getSanPham().getTenSP()); // Lấy tên sản phẩm
+                dto.setSoLuong(chiTiet.getSoLuong());
+//            dto.setDonGia(chiTiet.getDonGia());
+//            dto.setTongTien(chiTiet.getTongTien());
+                dto.setDonGia(String.valueOf(chiTiet.getDonGia())); // Chuyển đổi đơn giá sang chuỗi
+                dto.setTongTien(String.valueOf(chiTiet.getHoaDon().getTongTien())); // Chuyển đổi tổng tiền sang chuỗi
+                dto.setGiamGia(String.valueOf(chiTiet.getHoaDon().getTienGiam())); // Chuyển đổi tổng tiền sang chuỗi
+                dto.setTongTienSauGiamGia(String.valueOf(chiTiet.getHoaDon().getTienThu())); // Chuyển đổi tổng tiền sang chuỗi
 
-            // Tính toán tổng tiền sau giảm giá
-            BigDecimal tongTienSauGiamGia = chiTiet.getTongTien().subtract(chiTiet.getTongTien().multiply(giamGia));
-            dto.setTongTienSauGiamGia(tongTienSauGiamGia);
+                dto.setGhiChu(chiTiet.getGhiChu()); // Lấy ghi chú
+                dto.setTrangThai(chiTiet.getTrangThai()); // Lấy trạng thái
+
+        // Tính toán tổng tiền sau giảm giá
+//            BigDecimal tongTienSauGiamGia = chiTiet.getTongTien().subtract(chiTiet.getTongTien().multiply(giamGia));
+//            dto.setTongTienSauGiamGia(tongTienSauGiamGia);
 
             return dto;
         }).collect(Collectors.toList());
     }
 
 }
+
+//    List<ChiTietHoaDon> chiTietHoaDonList = repository.findByHoaDonId(idHoaDon);
+//
+//    // Lấy hóa đơn từ repository
+//    HoaDon hoaDon = hoaDonRepository.findById(idHoaDon).orElseThrow(() -> new RuntimeException("Hoa Don not found"));
+//
+//    // Lấy giá trị giảm giá từ hóa đơn, chuyển đổi thành BigDecimal nếu có
+//    final BigDecimal giamGia = hoaDon.getTienGiam() != null ? new BigDecimal(hoaDon.getTienGiam()) : BigDecimal.ZERO;
+//
+//        return chiTietHoaDonList.stream().map(chiTiet -> {
+//                ChiTietHoaDonDto dto = new ChiTietHoaDonDto();
+//                dto.setId(chiTiet.getHoaDon().getId());
+//                dto.setMaHoaDon(chiTiet.getHoaDon().getMaHoaDon()); // Lấy mã hóa đơn
+//                dto.setTenSanPham(chiTiet.getSanPham().getTenSP()); // Lấy tên sản phẩm
+//                dto.setSoLuong(chiTiet.getSoLuong());
+////            dto.setDonGia(chiTiet.getDonGia());
+////            dto.setTongTien(chiTiet.getTongTien());
+//                dto.setDonGia(String.valueOf(chiTiet.getDonGia())); // Chuyển đổi đơn giá sang chuỗi
+//                dto.setTongTien(String.valueOf(chiTiet.getTongTien())); // Chuyển đổi tổng tiền sang chuỗi
+//                dto.setGiamGia(String.valueOf(chiTiet.getHoaDon().getTienGiam())); // Chuyển đổi tổng tiền sang chuỗi
+//                dto.setTongTienSauGiamGia(String.valueOf(chiTiet.getHoaDon().getTienThu())); // Chuyển đổi tổng tiền sang chuỗi
+//
+//                dto.setGhiChu(chiTiet.getGhiChu()); // Lấy ghi chú
+//                dto.setTrangThai(chiTiet.getTrangThai()); // Lấy trạng thái

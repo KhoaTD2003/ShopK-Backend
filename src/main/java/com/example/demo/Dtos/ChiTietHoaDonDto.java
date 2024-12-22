@@ -14,14 +14,25 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ChiTietHoaDonDto {
 
+//        private UUID id;
+//        private String maHoaDon; // Mã hóa đơn
+//        private String tenSanPham; // Tên sản phẩm
+//        private int soLuong;
+//        private BigDecimal donGia;
+//        private BigDecimal tongTien;
+//        private BigDecimal giamGia; // Thêm trường giảm giá vào DTO
+//        private BigDecimal tongTienSauGiamGia; // Tổng tiền sau giảm giá
+//        private String ghiChu;
+//        private boolean trangThai;
+
         private UUID id;
         private String maHoaDon; // Mã hóa đơn
         private String tenSanPham; // Tên sản phẩm
         private int soLuong;
-        private BigDecimal donGia;
-        private BigDecimal tongTien;
-        private BigDecimal giamGia; // Thêm trường giảm giá vào DTO
-        private BigDecimal tongTienSauGiamGia; // Tổng tiền sau giảm giá
+        private String donGia;
+        private String tongTien;
+        private String giamGia; // Thêm trường giảm giá vào DTO
+        private String tongTienSauGiamGia; // Tổng tiền sau giảm giá
         private String ghiChu;
         private boolean trangThai;
 

@@ -1,6 +1,7 @@
 package com.example.demo.Services;
 
 import com.example.demo.Entities.GiamGia;
+import com.example.demo.Entities.SanPham;
 import com.example.demo.Entities.Size;
 import com.example.demo.Repositories.GiamGiaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,9 @@ public class GiamGiaService {
             existingGiamGia.setTen(giamGiaDetails.getTen());
             existingGiamGia.setNgayBatDau(giamGiaDetails.getNgayBatDau());
             existingGiamGia.setNgayKetThuc(giamGiaDetails.getNgayKetThuc());
+            existingGiamGia.setGiamGia(giamGiaDetails.getGiamGia());
+            existingGiamGia.setGiaTriMin(giamGiaDetails.getGiaTriMin());
+            existingGiamGia.setSoLansd(giamGiaDetails.getSoLansd());
             existingGiamGia.setTrangThai(giamGiaDetails.getTrangThai());
             return repository.save(existingGiamGia);
         }
@@ -112,4 +116,15 @@ public class GiamGiaService {
         return repository.existsByTen(name); // Gọi repo để kiểm tra
     }
 
+    public boolean updateStatusDiscount(UUID id, boolean trangThai) {
+        GiamGia giamGia = repository.findById(id).orElse(null);
+        if (giamGia != null) {
+            giamGia.setTrangThai(trangThai);
+            repository.save(giamGia);
+            return true;
+        } else {
+            System.out.println("Không tìm thấy sp với ID: " + id);
+            return false;
+        }
+    }
 }

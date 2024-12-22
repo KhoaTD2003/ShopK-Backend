@@ -39,38 +39,6 @@ public class GiamGiaController {
     }
 
 
-    // Thêm giảm giá mới
-//    @PostMapping
-//    public ResponseEntity<GiamGia> addGiamGia(@RequestBody GiamGia giamGia) {
-//        try {
-//            GiamGia savedGiamGia = service.add(giamGia);
-//            return new ResponseEntity<>(savedGiamGia, HttpStatus.CREATED);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
-    // API kiểm tra và giảm số lần sử dụng mã giảm giá
-//    @PostMapping("/sudung")
-//    public ResponseEntity<String> suDungGiamGia(@RequestParam String maGiamGia) {
-//        boolean isSuccess = service.giamSoLanSuDung(maGiamGia);
-//        if (isSuccess) {
-//            return ResponseEntity.ok("Mã giảm giá đã được áp dụng.");
-//        } else {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mã giảm giá đã hết số lần sử dụng hoặc không hợp lệ.");
-//        }
-//    }
-
-    // Cập nhật giảm giá
-//    @PutMapping("/{id}")
-//    public ResponseEntity<GiamGia> updateGiamGia(@PathVariable UUID id, @RequestBody GiamGia giamGiaDetails) {
-//        try {
-//            GiamGia updatedGiamGia = service.update(id, giamGiaDetails);
-//            return new ResponseEntity<>(updatedGiamGia, HttpStatus.OK);
-//        } catch (RuntimeException e) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
-
     // Xóa giảm giá
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGiamGia(@PathVariable UUID id) {
@@ -86,6 +54,7 @@ public class GiamGiaController {
         GiamGia gg = service.update(id, giamGia);
         return ResponseEntity.ok(gg);
     }
+
 
     @GetMapping("/code")
     public ResponseEntity<?> getDiscountByCode(@RequestParam String maGiamGia) {
@@ -135,6 +104,21 @@ public class GiamGiaController {
         GiamGia createdGiamGia= service.add(giamGia);
 
         return new ResponseEntity<>(createdGiamGia, HttpStatus.CREATED);
+    }
+
+
+
+    @PutMapping("/upStatusDiscount/{id}")
+    public ResponseEntity<?> updateStatusDiscount(@PathVariable("id") UUID id, @RequestParam("trangThai") boolean trangThai) {
+        System.out.println("Product ID: " + id);
+        System.out.println("Trang Thai: " + trangThai);
+
+        boolean result = service.updateStatusDiscount(id, trangThai);
+        if (result) {
+            return ResponseEntity.ok("Trạng thái giảm giá đã được cập nhật thành công.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy giảm giá với ID: " + id);
+        }
     }
 
 }

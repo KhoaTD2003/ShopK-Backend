@@ -49,7 +49,7 @@ public class DatHangController {
             UUID idTaiKhoan = nguoiDungDto.getIdTaiKhoan();
 
             // Lưu hoặc cập nhật người dùng
-            nguoiDungService.saveOrUpdateNguoiDung(nguoiDungDto);
+            nguoiDungService.saveOrUpdateNguoiDung2(nguoiDungDto);
 
             for (ChiTietSanPham sanPham : request.getSanPhamList()) {
                 SanPham sanPhamDb = sanPhamService.getProductById(sanPham.getIdSanPham());
@@ -109,8 +109,13 @@ public class DatHangController {
 //          hoaDon.setTrangThai(HoaDonStatus.PENDING); // Gán enum thay vì chuỗi "Chưa thanh toán"
 
             // Gán ID tài khoản vào hóa đơn
-            TaiKhoan taiKhoan = new TaiKhoan(idTaiKhoan); // Tạo đối tượng TaiKhoan với ID
-            hoaDon.setTaiKhoan(taiKhoan);
+//            TaiKhoan taiKhoan = new TaiKhoan(idTaiKhoan); // Tạo đối tượng TaiKhoan với ID
+//            hoaDon.setTaiKhoan(taiKhoan);
+            if (idTaiKhoan != null) {
+                // Nếu có tài khoản, gán ID tài khoản vào hóa đơn
+                TaiKhoan taiKhoan = new TaiKhoan(idTaiKhoan); // Tạo đối tượng TaiKhoan với ID
+                hoaDon.setTaiKhoan(taiKhoan);
+            }
 
             hoaDonService.add(hoaDon);
 
@@ -155,7 +160,8 @@ public class DatHangController {
                 giamGiaService.giamSoLanSuDung(request.getMaGiamGia());
             }
 
-            return ResponseEntity.ok("Đặt đơn thành công");
+//            return ResponseEntity.ok("Đặt đơn thành công");
+            return ResponseEntity.ok(hoaDon.getMaHoaDon());
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đặt đơn thất bại");
