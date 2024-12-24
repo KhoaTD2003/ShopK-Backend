@@ -40,7 +40,6 @@ public class HoaDon {
     @Column(name = "ngayTao")
     private LocalDateTime ngayTao;  // Thêm trường này để lưu thời gian tạo hóa đơn
 
-
     @Column(name = "trangthai")
     private String trangThai;
 
@@ -50,12 +49,15 @@ public class HoaDon {
 
     @Column(name = "ghichu")
     private String ghiChu;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_phuongthuctt")
     private PhuongThucTt phuongThucTt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_giamgia")
     private GiamGia giamGia;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_taikhoan")

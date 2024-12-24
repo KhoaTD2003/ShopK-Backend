@@ -3,10 +3,14 @@ package com.example.demo.Services;
 import com.example.demo.Dtos.ChiTietHoaDonDto;
 import com.example.demo.Entities.ChiTietHoaDon;
 import com.example.demo.Entities.HoaDon;
+import com.example.demo.Entities.MauSac;
 import com.example.demo.Repositories.HoaDonChiTietRepository;
 import com.example.demo.Repositories.HoaDonRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -27,11 +31,64 @@ public class HoaDonService {
     @Autowired
     private HoaDonChiTietRepository chiTietHoaDonRepository;
 
-    public List<HoaDon> getAll() {
-//        return repository.findAll();
-        return repository.findAll(Sort.by(Sort.Order.desc("ngayTao"))); // Sắp xếp theo ngày tạo, mới nhất lên đầu
+//    public List<HoaDon> getAll() {
+////        return repository.findAll();
+//        return repository.findAll(Sort.by(Sort.Order.desc("ngayTao"))); // Sắp xếp theo ngày tạo, mới nhất lên đầu
+//
+//    }
 
+    public Page<HoaDon> getAll(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+        return repository.findAll(pageable);
     }
+
+//    public Page<HoaDon> getHoaDon(int pageNumber, int pageSize, String maHoaDon, String sdt) {
+//        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("ngayTao").descending());
+//
+//        // Kiểm tra nếu có tham số tìm kiếm
+//        if (maHoaDon != null && !maHoaDon.isEmpty() || sdt != null && !sdt.isEmpty()) {
+//            // Tìm kiếm theo mã hóa đơn hoặc số điện thoại
+//            return repository.findByMaHoaDonOrSdtContaining(maHoaDon, sdt, pageable);
+//        } else {
+//            // Nếu không có tham số tìm kiếm, lấy tất cả hóa đơn
+//            return repository.findAll(pageable);
+//        }
+//    }
+
+
+    public Page<HoaDon> getHoaDon(int pageNumber, int pageSize, String maHoaDon, String sdt, String trangThai, String ghiChu) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("ngayTao").descending());
+
+        // Kiểm tra nếu có tham số tìm kiếm theo mã hóa đơn hoặc số điện thoại
+        if ((maHoaDon != null && !maHoaDon.isEmpty()) || (sdt != null && !sdt.isEmpty())) {
+            // Tìm kiếm theo mã hóa đơn hoặc số điện thoại
+            return repository.findByMaHoaDonOrSdtContaining(maHoaDon, sdt, pageable);
+        } else if ((trangThai != null && !trangThai.isEmpty()) || (ghiChu != null && !ghiChu.isEmpty())) {
+            // Tìm kiếm theo trạng thái và ghi chú
+            return repository.findByTrangThaiAndGhiChuContaining(trangThai, ghiChu, pageable);
+        } else {
+            // Nếu không có tham số tìm kiếm, lấy tất cả hóa đơn
+            return repository.findAll(pageable);
+        }
+    }
+
+    public Page<HoaDon> findByTrangThai(String trangThai, String ghiChu, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);  // Tạo Pageable từ số trang và kích thước trang
+        return repository.findByTrangThaiAndGhiChuContaining(trangThai, ghiChu, pageable);
+    }
+//    public Page<HoaDon> getHoaDon2(int pageNumber, int pageSize, String maHoaDon, String sdt, String ghiChu, String trangThai) {
+//        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("ngayTao").descending());
+//
+//        // Kiểm tra nếu có tham số tìm kiếm
+//        if (maHoaDon != null && !maHoaDon.isEmpty() || sdt != null && !sdt.isEmpty() || ghiChu != null || trangThai != null) {
+//            // Tìm kiếm theo mã hóa đơn hoặc số điện thoại
+//            return repository.findByMaHoaDonOrSdtContainingAndFilters(maHoaDon, sdt,ghiChu,trangThai ,pageable );
+//        } else {
+//            // Nếu không có tham số tìm kiếm, lấy tất cả hóa đơn
+//            return repository.findAll(pageable);
+//        }
+//    }
 
     public HoaDon add(HoaDon hoaDon) {
 //        hoaDon.setNgayTao(new Date());

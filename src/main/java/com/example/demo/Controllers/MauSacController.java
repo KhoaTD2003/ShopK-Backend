@@ -41,17 +41,17 @@ public class MauSacController {
     public ResponseEntity<?> add(@RequestBody MauSac xuatXu) {
         // Kiểm tra mã sản phẩm có tồn tại không
         if (msService.isColorCodeExist(xuatXu.getMa())) {
-            return ResponseEntity.badRequest().body("Mã sản phẩm đã tồn tại");
+            return ResponseEntity.badRequest().body("Mã màu đã tồn tại");
         }
         if (msService.existsByName(xuatXu.getTen())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("message", "Tên thương hiệu đã tồn tại!"));
         }
-        // Nếu mã thương hiệu chưa có, tự động sinh mã mới
-        if (xuatXu.getMa() == null || xuatXu.getMa().isEmpty()) {
-            String newBrandCode = msService.GenarateColorCode(); // Hàm tạo mã mới
-            xuatXu.setMa(newBrandCode); // Gán mã mới vào thương hiệu
-        }
+//         Nếu mã thương hiệu chưa có, tự động sinh mã mới
+//        if (xuatXu.getMa() == null || xuatXu.getMa().isEmpty()) {
+//            String newBrandCode = msService.GenarateColorCode(); // Hàm tạo mã mới
+//            xuatXu.setMa(newBrandCode); // Gán mã mới vào thương hiệu
+//        }
 
         // Lưu thương hiệu vào cơ sở dữ liệu
         MauSac createdXuatXu= msService.add(xuatXu);

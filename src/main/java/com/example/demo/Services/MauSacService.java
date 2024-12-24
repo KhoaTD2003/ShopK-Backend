@@ -50,6 +50,7 @@ public class MauSacService {
     public boolean existsByName(String name) {
         return msRepo.existsByTen(name); // Gọi repo để kiểm tra
     }
+
     public MauSac add(MauSac mauSac){
         return msRepo.save(mauSac);
     }
@@ -61,7 +62,7 @@ public class MauSacService {
             ms.setMa(mauSac.getMa());
             ms.setTen(mauSac.getTen());
 
-            return msRepo.save(mauSac);
+            return msRepo.save(ms);
         } else {
             throw new RuntimeException("Không tìm thấy với ID: " + id);
         }

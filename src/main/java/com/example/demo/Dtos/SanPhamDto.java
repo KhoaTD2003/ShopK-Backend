@@ -23,6 +23,8 @@ public class SanPhamDto {
     private TheLoai theLoai;
     private Size size;
     private MauSac mauSac;
+    private Boolean trangThai;
+
 //    private ChatLieu chatLieu;
 //    private XuatXu xuatXu;
 }

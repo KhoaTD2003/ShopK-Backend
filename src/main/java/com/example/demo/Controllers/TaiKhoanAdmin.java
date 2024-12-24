@@ -147,26 +147,41 @@ public class TaiKhoanAdmin {
 //    }
 
     @GetMapping("/product")
-    public ResponseEntity<Page<SanPhamAdminDto>> getAllProducts(
-            @RequestParam(value = "tenSP", required = false, defaultValue = "") String tenSP,
-            @RequestParam(value = "page", defaultValue = "0") int page) {
+    public ResponseEntity<Page<SanPhamAdminDto>> getProducts(
+            @RequestParam(value = "tenSP", required = false) String tenSP,
+            @RequestParam(value = "soLuongTon", required = false) Integer soLuongTon,
+            @RequestParam(value = "sortByPrice", required = false, defaultValue = "asc") String sortByPrice,
+            @RequestParam(value = "trangThai", required = false) Boolean trangThai, // Thêm tham số trạng thái
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "12") int size) {
         try {
-            Page<SanPhamAdminDto> products;
-
-            // Kiểm tra nếu `tenSP` không rỗng, thực hiện tìm kiếm theo tên
-            if (tenSP != null && !tenSP.trim().isEmpty()) {
-                products = sanPhamService.getAllProducts2(tenSP, page);
-            } else {
-                // Ngược lại, trả về toàn bộ sản phẩm
-                products = sanPhamService.getAllProducts(page);
-            }
-
-            return ResponseEntity.ok(products); // Trả về kết quả
+            Page<SanPhamAdminDto> products = sanPhamService.getProducts(tenSP, soLuongTon, sortByPrice, page, size,trangThai);
+            return ResponseEntity.ok(products);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Xử lý lỗi
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
+//    public ResponseEntity<Page<SanPhamAdminDto>> getAllProducts(
+//            @RequestParam(value = "tenSP", required = false, defaultValue = "") String tenSP,
+//            @RequestParam(value = "page", defaultValue = "0") int page) {
+//        try {
+//            Page<SanPhamAdminDto> products;
+//
+//            // Kiểm tra nếu `tenSP` không rỗng, thực hiện tìm kiếm theo tên
+//            if (tenSP != null && !tenSP.trim().isEmpty()) {
+//                products = sanPhamService.getAllProducts2(tenSP, page);
+//            } else {
+//                // Ngược lại, trả về toàn bộ sản phẩm
+//                products = sanPhamService.getAllProducts(page);
+//            }
+//
+//            return ResponseEntity.ok(products); // Trả về kết quả
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Xử lý lỗi
+//        }
+//    }
+//
 
 
     @PutMapping("/upStatusProduct/{productId}")

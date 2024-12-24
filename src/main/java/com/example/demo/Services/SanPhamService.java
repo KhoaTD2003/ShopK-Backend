@@ -139,10 +139,27 @@ public class SanPhamService {
         return spRepo.findAllProduct(pageable);
     }
 
-    public Page<SanPhamAdminDto> getAllProducts2(String tenSP,int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 12);
-        return spRepo.searchByName(tenSP,pageable);
+    public Page<SanPhamAdminDto> getProducts(String tenSP, Integer soLuongTon, String sortByPrice, int page, int size, Boolean trangThai) {
+        Sort sort = (sortByPrice != null && sortByPrice.equalsIgnoreCase("desc"))
+                ? Sort.by(Sort.Order.desc("giaBan"))  // Sắp xếp giảm dần theo giá
+                : Sort.by(Sort.Order.asc("giaBan"));  // Sắp xếp tăng dần theo giá
+
+        Pageable pageable = PageRequest.of(page, size,sort);
+
+        // Nếu tên sản phẩm hoặc điều kiện tồn kho được truyền vào, sử dụng phương thức tìm kiếm
+        if (tenSP != null || soLuongTon != null || sortByPrice != null || trangThai != null) {
+            return spRepo.searchByNameAndFilters(tenSP, soLuongTon,trangThai, pageable);
+        }
+
+        // Nếu không có điều kiện tìm kiếm, trả về tất cả sản phẩm
+        return spRepo.findAllProduct(pageable);
     }
+
+
+//    public Page<SanPhamAdminDto> getAllProducts2(String tenSP,int pageNumber) {
+//        Pageable pageable = PageRequest.of(pageNumber, 12);
+//        return spRepo.searchByName(tenSP,pageable);
+//    }
 
     public boolean updateStatusProduct(UUID userId, boolean trangThai) {
         SanPham sanPham = spRepo.findById(userId).orElse(null);

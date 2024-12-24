@@ -19,19 +19,22 @@ import java.util.UUID;
 @Repository
 public interface SanPhamRepository extends JpaRepository<SanPham, UUID> {
 
-    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id ,s.tenSP, s.maSP, s.giaBan, s.anh,s.moTa,s.soLuongTon,s.thuongHieu,s.theLoai,s.size,s.mauSac) " +
-            "FROM SanPham s")
+    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id ,s.tenSP, s.maSP, s.giaBan, s.anh,s.moTa,s.soLuongTon,s.thuongHieu,s.theLoai,s.size,s.mauSac,s.trangThai) " +
+            "FROM SanPham s "+
+            "WHERE s.trangThai = true")
     Page<SanPhamDto> findAllProductDetails(Pageable pageable);
 //,s.theLoai,s.size,s.mauSac,s.chatLieu,s.xuatXu
     // Trả về danh sách sản phẩm sắp xếp tăng dần theo giá
-    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh,s.moTa,s.soLuongTon,s.thuongHieu,s.theLoai,s.size,s.mauSac) " +
+    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh,s.moTa,s.soLuongTon,s.thuongHieu,s.theLoai,s.size,s.mauSac,s.trangThai) " +
             "FROM SanPham s " +
+            "WHERE s.trangThai = true " +
             "ORDER BY s.giaBan ASC")
     Page<SanPhamDto> findAllProductDetailsSortedByPriceAsc(Pageable pageable);
 
     // Trả về danh sách sản phẩm sắp xếp giảm dần theo giá
-    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh,s.moTa,s.soLuongTon,s.thuongHieu,s.theLoai,s.size,s.mauSac) " +
+    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh,s.moTa,s.soLuongTon,s.thuongHieu,s.theLoai,s.size,s.mauSac,s.trangThai) " +
             "FROM SanPham s " +
+            "WHERE s.trangThai = true " +
             "ORDER BY s.giaBan DESC")
     Page<SanPhamDto> findAllProductDetailsSortedByPriceDesc(Pageable pageable);
 
@@ -50,49 +53,56 @@ public interface SanPhamRepository extends JpaRepository<SanPham, UUID> {
 //            @Param("tenSP") String tenSP,
 //            @Param("sortOrder") String sortOrder,
 //            Pageable pageable);
-@Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id, s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa,s.soLuongTon, s.thuongHieu, s.theLoai, s.size, s.mauSac) " +
+@Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id, s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa,s.soLuongTon, s.thuongHieu, s.theLoai, s.size, s.mauSac,s.trangThai) " +
         "FROM SanPham s " +
-        "WHERE (:tenSP IS NULL OR s.tenSP LIKE %:tenSP%)")
+        "WHERE s.trangThai = true " +
+        "AND (:tenSP IS NULL OR s.tenSP LIKE %:tenSP%)")
 Page<SanPhamDto> searchAndSortProductsByName(
         @Param("tenSP") String tenSP,
         Pageable pageable);
 
 
-    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa, s.soLuongTon,s.thuongHieu,s.theLoai,s.size,s.mauSac) " +
+    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa, s.soLuongTon,s.thuongHieu,s.theLoai,s.size,s.mauSac,s.trangThai) " +
             "FROM SanPham s " +
             "JOIN s.thuongHieu th " +
-            "WHERE (:thuongHieu IS NULL OR th.ten LIKE %:thuongHieu%)")
+            "WHERE s.trangThai = true " +
+            "AND (:thuongHieu IS NULL OR th.ten LIKE %:thuongHieu%)")
     Page<SanPhamDto> findByThuongHieu(@Param("thuongHieu") String thuongHieu,Pageable pageable);
 
-    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa, s.soLuongTon,s.thuongHieu,s.theLoai,s.size,s.mauSac) " +
+    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa, s.soLuongTon,s.thuongHieu,s.theLoai,s.size,s.mauSac,s.trangThai) " +
             "FROM SanPham s " +
             "JOIN s.theLoai tl " +
-            "WHERE (:theLoai IS NULL OR tl.ten LIKE %:theLoai%)")
+            "WHERE s.trangThai = true " +
+            "AND (:theLoai IS NULL OR tl.ten LIKE %:theLoai%)")
     Page<SanPhamDto> findByTheLoai(@Param("theLoai") String theLoai,Pageable pageable);
 
-    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa,s.soLuongTon, s.thuongHieu, s.theLoai,s.size,s.mauSac) " +
+    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa,s.soLuongTon, s.thuongHieu, s.theLoai,s.size,s.mauSac,s.trangThai) " +
             "FROM SanPham s " +
-            "WHERE s.maSP = :maSP")
+            "WHERE s.trangThai = true " +
+            "AND s.maSP = :maSP")
     SanPhamDto findByMaSP(@Param("maSP") String maSP);
 
     // Tìm sản phẩm theo khoảng giá
-    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa,s.soLuongTon, s.thuongHieu, s.theLoai,s.size,s.mauSac) " +
+    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa,s.soLuongTon, s.thuongHieu, s.theLoai,s.size,s.mauSac,s.trangThai) " +
             "FROM SanPham s " +
-            "WHERE s.giaBan BETWEEN :minPrice AND :maxPrice")
+            "WHERE s.trangThai = true " +
+            "AND s.giaBan BETWEEN :minPrice AND :maxPrice")
     Page<SanPhamDto> findByPriceBetween(@Param("minPrice") Double minPrice, @Param("maxPrice") Double maxPrice, Pageable pageable);
 
     // Tìm sản phẩm theo màu sắc
-    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa,s.soLuongTon, s.thuongHieu, s.theLoai,s.size,s.mauSac) " +
+    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa,s.soLuongTon, s.thuongHieu, s.theLoai,s.size,s.mauSac,s.trangThai) " +
             "FROM SanPham s " +
             "JOIN s.mauSac m " +
-            "WHERE (:mauSac IS NULL OR m.ten LIKE %:mauSac%)")
+            "WHERE s.trangThai = true " +
+            "AND (:mauSac IS NULL OR m.ten LIKE %:mauSac%)")
     Page<SanPhamDto> findByMauSac(@Param("mauSac") String mauSac, Pageable pageable);
 
     // Tìm sản phẩm theo kích thước
-    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa, s.soLuongTon,s.thuongHieu, s.theLoai,s.size,s.mauSac) " +
+    @Query("SELECT new com.example.demo.Dtos.SanPhamDto(s.id,s.tenSP, s.maSP, s.giaBan, s.anh, s.moTa, s.soLuongTon,s.thuongHieu, s.theLoai,s.size,s.mauSac,s.trangThai) " +
             "FROM SanPham s " +
             "JOIN s.size sz " +
-            "WHERE (:size IS NULL OR sz.ten LIKE %:size%)")
+            "WHERE s.trangThai = true " +
+            "AND (:size IS NULL OR sz.ten LIKE %:size%)")
     Page<SanPhamDto> findBySize(@Param("size") String size, Pageable pageable);
 
 
@@ -112,18 +122,41 @@ Page<SanPhamDto> searchAndSortProductsByName(
             + "ORDER BY sp.ngayTao DESC ") // Sắp xếp theo ngày tạo
     Page<SanPhamAdminDto> findAllProduct(Pageable pageable);
 
-    @Query("SELECT new com.example.demo.Dtos.SanPhamAdminDto(sp.id, sp.maSP, sp.tenSP, sp.giaBan, sp.soLuongTon, sp.moTa, sp.anh, "
-            + "th.ten, sz.ten, ms.ten, cl.ten, xx.ten, tl.ten, sp.trangThai,sp.ngayTao) "
-            + "FROM SanPham sp "
-            + "JOIN sp.thuongHieu th "
-            + "JOIN sp.size sz "
-            + "JOIN sp.mauSac ms "
-            + "JOIN sp.chatLieu cl "
-            + "JOIN sp.xuatXu xx "
-            + "JOIN sp.theLoai tl "
-          +  "WHERE (:tenSP IS NULL OR sp.tenSP LIKE %:tenSP%)")
-    Page<SanPhamAdminDto> searchByName(
+//    @Query("SELECT new com.example.demo.Dtos.SanPhamAdminDto(sp.id, sp.maSP, sp.tenSP, sp.giaBan, sp.soLuongTon, sp.moTa, sp.anh, "
+//            + "th.ten, sz.ten, ms.ten, cl.ten, xx.ten, tl.ten, sp.trangThai,sp.ngayTao) "
+//            + "FROM SanPham sp "
+//            + "JOIN sp.thuongHieu th "
+//            + "JOIN sp.size sz "
+//            + "JOIN sp.mauSac ms "
+//            + "JOIN sp.chatLieu cl "
+//            + "JOIN sp.xuatXu xx "
+//            + "JOIN sp.theLoai tl "
+//          +  "WHERE (:tenSP IS NULL OR sp.tenSP LIKE %:tenSP%)")
+//    Page<SanPhamAdminDto> searchByName(
+//            @Param("tenSP") String tenSP,
+//            Pageable pageable);
+
+    @Query("SELECT new com.example.demo.Dtos.SanPhamAdminDto(sp.id, sp.maSP, sp.tenSP, sp.giaBan, sp.soLuongTon, sp.moTa, sp.anh, " +
+            "th.ten, sz.ten, ms.ten, cl.ten, xx.ten, tl.ten, sp.trangThai, sp.ngayTao) " +
+            "FROM SanPham sp " +
+            "JOIN sp.thuongHieu th " +
+            "JOIN sp.size sz " +
+            "JOIN sp.mauSac ms " +
+            "JOIN sp.chatLieu cl " +
+            "JOIN sp.xuatXu xx " +
+            "JOIN sp.theLoai tl " +
+            "WHERE (:tenSP IS NULL OR sp.tenSP LIKE %:tenSP%) " +
+            "AND (:soLuongTon IS NULL OR sp.soLuongTon = :soLuongTon) " +
+            "AND (:trangThai IS NULL OR sp.trangThai = :trangThai) "   // Lọc theo trạng thái sản phẩm
+//            "ORDER BY "
+    )
+//            "CASE WHEN :sortByPrice = 'asc' THEN sp.giaBan END ASC, " +
+//            "CASE WHEN :sortByPrice = 'desc' THEN sp.giaBan END DESC")
+    Page<SanPhamAdminDto> searchByNameAndFilters(
             @Param("tenSP") String tenSP,
+            @Param("soLuongTon") Integer soLuongTon,  // Điều kiện lọc theo số lượng tồn
+//            @Param("sortByPrice") String sortByPrice, // sắp xếp theo giá, 'asc' hoặc 'desc'
+            @Param("trangThai") Boolean trangThai,  // Lọc theo trạng thái hoạt động
             Pageable pageable);
 
 
