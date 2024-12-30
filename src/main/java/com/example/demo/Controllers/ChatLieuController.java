@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 
 import com.example.demo.Entities.ChatLieu;
 import com.example.demo.Entities.Size;
+import com.example.demo.Entities.ThuongHieu;
 import com.example.demo.Services.ChatLieuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,13 +28,19 @@ public class ChatLieuController {
         return chatLieuService.getAll();
     }
 
+    //    @GetMapping("/page")
+//    public Page<ChatLieu> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber) {
+//        return chatLieuService.getAll(pageNumber);
+//    }
+
     @GetMapping("/page")
-    public Page<ChatLieu> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber) {
-        return chatLieuService.getAll(pageNumber);
+    public Page<ChatLieu> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber,
+                                             @RequestParam(value = "ten", required = false) String ten) {
+        return chatLieuService.getAll(pageNumber, ten);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ChatLieu> getThuongHieuById(@PathVariable UUID id){
+    public ResponseEntity<ChatLieu> getThuongHieuById(@PathVariable UUID id) {
         ChatLieu xuatXu = chatLieuService.findById(id);
         return ResponseEntity.ok(xuatXu);
     }
@@ -56,7 +63,7 @@ public class ChatLieuController {
         }
 
         // Lưu thương hiệu vào cơ sở dữ liệu
-        ChatLieu createdXuatXu= chatLieuService.add(xuatXu);
+        ChatLieu createdXuatXu = chatLieuService.add(xuatXu);
 
         return new ResponseEntity<>(createdXuatXu, HttpStatus.CREATED);
     }

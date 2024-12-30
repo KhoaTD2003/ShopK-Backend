@@ -2,11 +2,15 @@ package com.example.demo.Repositories;
 
 import com.example.demo.Entities.GiamGia;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,4 +31,19 @@ public interface GiamGiaRepository extends JpaRepository<GiamGia, UUID> {
 
     boolean existsByTen(String ten); // Tự động sinh truy vấn kiểm tra tên
 
+    // Lấy giảm giá theo tên hoặc mã với phân trang
+    Page<GiamGia> findByTenContainingOrMaContaining(String ten, String ma, Pageable pageable);
+
+    // Lấy giảm giá theo trạng thái với phân trang
+    Page<GiamGia> findByTrangThai(Boolean trangThai, Pageable pageable);
+
+    // Lấy giảm giá theo loại giảm với phân trang
+    @Query("SELECT g FROM GiamGia g WHERE g.giamGia LIKE %:giamGia%")
+    Page<GiamGia> findByGiamGiaType(@Param("giamGia") String giamGia, Pageable pageable);
+
+
+    // Cập nhật trạng thái cho các giảm giá có ngày kết thúc <= ngày hôm nay
+    @Modifying
+    @Query("UPDATE GiamGia g SET g.trangThai = false WHERE g.ngayKetThuc <= :today AND g.trangThai = true")
+    void updateExpiredDiscounts(Date today);
 }

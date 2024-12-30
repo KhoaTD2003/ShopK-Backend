@@ -4,6 +4,8 @@ import com.example.demo.Dtos.NguoiDungDto;
 import com.example.demo.Entities.NguoiDung;
 import com.example.demo.Entities.TaiKhoan;
 import org.apache.catalina.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,13 +35,25 @@ public interface NguoiDungRepository extends JpaRepository<NguoiDung, UUID> {
 //    @Query("SELECT n FROM NguoiDung n WHERE n.taiKhoan.id = :idTaiKhoan")
 //    NguoiDung findByIdTaiKhoan(@Param("idTaiKhoan") UUID idTaiKhoan);
 
-//    List<NguoiDung> findByTaiKhoanRole(String role);
-    List<NguoiDung> findByTaiKhoan_Role(String role);
+    //    List<NguoiDung> findByTaiKhoanRole(String role);
+    @Query("SELECT nd FROM NguoiDung nd WHERE nd.taiKhoan.role = :role")
+    Page<NguoiDung> findByTaiKhoan_Role(String role, Pageable pageable);
 
-    // Lấy id tài khoản của người dùng theo mã người dùng
-//    @Query("SELECT n.taiKhoan.id FROM NguoiDung n WHERE n.maNguoiDung = :maNguoiDung")
-//    UUID findTaiKhoanIdByMaNguoiDung(@Param("maNguoiDung") String maNguoiDung);
 
+    // 1. Lấy người dùng theo vai trò (role)
+    @Query("SELECT nd FROM NguoiDung nd WHERE nd.taiKhoan.role = :role")
+    Page<NguoiDung> findByRole(@Param("role") String role, Pageable pageable);
+
+    // 2. Lấy người dùng theo tên hoặc số điện thoại và vai trò
+    @Query("SELECT nd FROM NguoiDung nd WHERE (nd.hoTen LIKE %:hoTen% OR nd.sdt LIKE %:sdt%) AND nd.taiKhoan.role = :role")
+    Page<NguoiDung> findByHoTenOrSdtAndRole(@Param("hoTen") String hoTen, @Param("sdt") String sdt, @Param("role") String role, Pageable pageable);
+
+    // 3. Lấy người dùng theo trạng thái và vai trò
+        @Query("SELECT nd FROM NguoiDung nd WHERE nd.trangThai = :trangThai AND nd.taiKhoan.role = :role")
+        Page<NguoiDung> findByTrangThaiAndRole(@Param("trangThai") Boolean trangThai, @Param("role") String role, Pageable pageable);
+
+    @Query("SELECT u FROM NguoiDung u WHERE (u.hoTen = :hoTen OR u.sdt = :sdt) AND u.trangThai = :trangThai AND u.taiKhoan.role = :role")
+    Page<NguoiDung> findByHoTenOrSdtAndTrangThaiAndRole(@Param("hoTen") String hoTen, @Param("sdt") String sdt, @Param("trangThai") Boolean trangThai, @Param("role") String role, Pageable pageable);
 
     void delete(NguoiDung nguoiDung);
 

@@ -27,9 +27,15 @@ public class XuatXuController {
     }
 
 
+//    @GetMapping("/page")
+//    public Page<XuatXu> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber) {
+//        return xuatXuService.getAll(pageNumber);
+//    }
+
     @GetMapping("/page")
-    public Page<XuatXu> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber) {
-        return xuatXuService.getAll(pageNumber);
+    public Page<XuatXu> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber,
+                                             @RequestParam(value = "ten", required = false) String ten) {
+        return xuatXuService.getAll(pageNumber, ten);
     }
 
     @GetMapping("/{id}")

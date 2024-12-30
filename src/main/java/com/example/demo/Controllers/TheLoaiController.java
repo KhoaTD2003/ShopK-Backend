@@ -1,6 +1,7 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.Entities.TheLoai;
+import com.example.demo.Entities.ThuongHieu;
 import com.example.demo.Entities.XuatXu;
 import com.example.demo.Services.TheLoaiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,19 @@ public class TheLoaiController {
         return this.theLoaiService.getAll();
     }
 
+//    @GetMapping("/page")
+//    public Page<TheLoai> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber) {
+//        return theLoaiService.getAll(pageNumber);
+//    }
+
     @GetMapping("/page")
-    public Page<TheLoai> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber) {
-        return theLoaiService.getAll(pageNumber);
+    public Page<TheLoai> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber,
+                                          @RequestParam(value = "ten", required = false) String ten) {
+        return theLoaiService.getAll(pageNumber, ten);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TheLoai> getThuongHieuById(@PathVariable UUID id){
+    public ResponseEntity<TheLoai> getThuongHieuById(@PathVariable UUID id) {
         TheLoai xuatXu = theLoaiService.findById(id);
         return ResponseEntity.ok(xuatXu);
     }
@@ -54,7 +61,7 @@ public class TheLoaiController {
         }
 
         // Lưu thương hiệu vào cơ sở dữ liệu
-        TheLoai createdXuatXu= theLoaiService.add(xuatXu);
+        TheLoai createdXuatXu = theLoaiService.add(xuatXu);
 
         return new ResponseEntity<>(createdXuatXu, HttpStatus.CREATED);
     }

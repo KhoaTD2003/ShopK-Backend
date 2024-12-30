@@ -23,9 +23,18 @@ public class SizeService {
         return sRepo.findAll();
     }
 
-    public Page<Size> getAll(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+//    public Page<Size> getAll(int pageNumber) {
+//        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+//        return sRepo.findAll(pageable);
+//    }
+
+    public Page<Size> getAll(int pageNumber, String ten) {
+        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("ngayTao").descending());
+        if (ten != null && !ten.isEmpty()) {
+            return sRepo.findByTenContaining(ten, pageable);
+        }
         return sRepo.findAll(pageable);
+
     }
 
     public String GenarateSizeCode() {

@@ -31,9 +31,11 @@ public class ThuongHieuController {
 
 
     @GetMapping("/page")
-    public Page<ThuongHieu> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber) {
-        return service.getAll(pageNumber);
+    public Page<ThuongHieu> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber,
+                                             @RequestParam(value = "ten", required = false) String ten) {
+        return service.getAll(pageNumber, ten);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ThuongHieu> getThuongHieuById(@PathVariable UUID id){

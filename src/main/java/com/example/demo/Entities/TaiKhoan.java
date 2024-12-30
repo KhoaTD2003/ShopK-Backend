@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Table(name = "TaiKhoan")
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties({"matKhau"})
+//@JsonIgnoreProperties({"matKhau"})
 public class TaiKhoan {
 
     @Id
@@ -52,4 +53,12 @@ public class TaiKhoan {
     @OneToOne(mappedBy = "taiKhoan", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private NguoiDung nguoiDung;
 
+    @Column(name = "ngaytao")
+    private LocalDateTime ngayTao;
+    @PrePersist
+    public void prePersist() {
+        if (this.ngayTao == null) {
+            this.ngayTao = LocalDateTime.now(); // Thiết lập giá trị createdAt khi thêm mới
+        }
+    }
 }

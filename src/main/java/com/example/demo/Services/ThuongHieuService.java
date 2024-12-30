@@ -25,8 +25,20 @@ public class ThuongHieuService {
         return thuongHieuRepository.findAll();
     }
 
-    public Page<ThuongHieu> getAll(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+//    public Page<ThuongHieu> getAll(int pageNumber, String ten) {
+//        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("ngayTao").descending());
+//        if (ten != null && !ten.isEmpty()) {
+//            thuongHieuRepository.findByTenContaining(ten, pageable);
+//        }
+//        return thuongHieuRepository.findAll(pageable);
+//
+//    }
+
+    public Page<ThuongHieu> getAll(int pageNumber, String ten) {
+        Pageable pageable = PageRequest.of(pageNumber, 10,Sort.by("ngayTao").descending()); // Số lượng bản ghi mỗi trang
+        if (ten != null && !ten.isEmpty()) {
+            return thuongHieuRepository.findByTenContaining(ten, pageable);
+        }
         return thuongHieuRepository.findAll(pageable);
     }
 
@@ -55,6 +67,7 @@ public class ThuongHieuService {
         }
 
     }
+
     public ThuongHieu add(ThuongHieu thuongHieu) {
         return thuongHieuRepository.save(thuongHieu);
     }
@@ -73,6 +86,7 @@ public class ThuongHieuService {
         int newBrandNumber = maxBrandNumber + 1;
         return String.format("TH%3d", newBrandNumber);
     }
+
     // Kiểm tra mã sản phẩm đã tồn tại hay chưa
     public boolean isBrandCodeExist(String ma) {
         return thuongHieuRepository.existsByMa(ma); // Kiểm tra mã sản phẩm có tồn tại trong cơ sở dữ liệu

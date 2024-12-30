@@ -73,7 +73,7 @@ public class HoaDonController {
     @GetMapping()
     public Page<HoaDon> getHoaDon(
             @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "pageSize", defaultValue = "12") int pageSize,
             @RequestParam(value = "maHoaDon", required = false) String maHoaDon,
             @RequestParam(value = "sdt", required = false) String sdt,
             @RequestParam(value = "trangThai", required = false) String trangThai,
@@ -96,6 +96,12 @@ public class HoaDonController {
     @PutMapping("/{id}")
     public ResponseEntity<HoaDon> updatehoaDon(@PathVariable UUID id, @RequestBody HoaDon hoaDonDetail) {
         HoaDon updateHoaDon = hoaDonService.update(id, hoaDonDetail);
+        return ResponseEntity.ok(updateHoaDon);
+    }
+
+    @PutMapping("/status/{id}")
+    public ResponseEntity<HoaDon> updateStatushoaDon(@PathVariable UUID id) {
+        HoaDon updateHoaDon = hoaDonService.updateCancel(id);
         return ResponseEntity.ok(updateHoaDon);
     }
 

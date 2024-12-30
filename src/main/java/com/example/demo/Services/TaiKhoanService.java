@@ -9,6 +9,10 @@ import com.example.demo.Repositories.ChatLieuRepository;
 import com.example.demo.Repositories.NguoiDungRepository;
 import com.example.demo.Repositories.TaiKhoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -164,62 +168,84 @@ public class TaiKhoanService {
         );
     }
 
-
     public TaiKhoan login(String tenTaiKhoan, String matKhau) {
         // Tìm tài khoản trong cơ sở dữ liệu
         TaiKhoan taiKhoan = repository.findByTenTaiKhoan(tenTaiKhoan);
-        if (taiKhoan != null && taiKhoan.getMatKhau().equals(matKhau)) {
-            // Kiểm tra xem tài khoản có bị tắt không
-            if (!taiKhoan.getNguoiDung().getTrangThai()) {
-                // Nếu tài khoản bị tắt, trả về lỗi 403 với thông báo
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Tài khoản của bạn đã bị tắt");
-            }
+
+        // Kiểm tra nếu tài khoản không tồn tại
+        if (taiKhoan == null) {
+            throw new IllegalArgumentException("Tên tài khoản hoặc mật khẩu không chính xác.");
         }
 
-        // Kiểm tra nếu tài khoản tồn tại và mật khẩu khớp
+        // Kiểm tra trạng thái tài khoản (nếu bị tắt thì không cho phép đăng nhập)
+        if (!taiKhoan.isTrangThai()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Tài khoản của bạn đã bị tắt.");
+        }
+
+        // Kiểm tra nếu vai trò là Admin thì không cho phép đăng nhập
+        if ("Admin".equalsIgnoreCase(taiKhoan.getRole())) {
+            throw new IllegalArgumentException("Tài khoản Admin không được phép đăng nhập.");
+        }
+
+        // Kiểm tra mật khẩu
+        if (!taiKhoan.getMatKhau().equals(matKhau)) {
+            throw new IllegalArgumentException("Tên tài khoản hoặc mật khẩu không chính xác.");
+        }
+
+
+
+        // Kiểm tra vai trò người dùng
+        if ("Nhân Viên".equalsIgnoreCase(taiKhoan.getRole())) {
+            // Nếu là nhân viên, trả về đối tượng TaiKhoan đã kiểm tra vai trò
+            taiKhoan.setMatKhau(""); // Xóa mật khẩu trước khi trả về
+            return taiKhoan; // Trả về thông tin nhân viên
+        } else if ("Khách Hàng".equalsIgnoreCase(taiKhoan.getRole())) {
+            // Nếu là khách hàng, trả về đối tượng TaiKhoan
+            taiKhoan.setMatKhau(""); // Xóa mật khẩu trước khi trả về
+            return taiKhoan; // Trả về thông tin khách hàng
+        } else {
+            // Nếu vai trò không hợp lệ
+            throw new IllegalArgumentException("Vai trò người dùng không hợp lệ.");
+        }
+    }
+
+//    public TaiKhoan login(String tenTaiKhoan, String matKhau) {
+//        // Tìm tài khoản trong cơ sở dữ liệu
+//        TaiKhoan taiKhoan = repository.findByTenTaiKhoan(tenTaiKhoan);
 //        if (taiKhoan != null && taiKhoan.getMatKhau().equals(matKhau)) {
+//            // Kiểm tra xem tài khoản có bị tắt không
+//            if (!taiKhoan.isTrangThai()==false ) {
+//                // Nếu tài khoản bị tắt, trả về lỗi 403 với thông báo
+//                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Tài khoản của bạn đã bị tắt");
+//            }
+//        }
+//
+//
+//        if (taiKhoan != null && taiKhoan.getMatKhau().equals(matKhau)) {
+//            // Kiểm tra nếu vai trò là Admin thì không cho phép đăng nhập
+//            if ("admin".equalsIgnoreCase(taiKhoan.getRole())) {
+//                throw new IllegalArgumentException("Tài khoản Admin không được phép đăng nhập.");
+//            }
+//
 //            // Kiểm tra vai trò của người dùng
 //            if ("Nhân Viên".equalsIgnoreCase(taiKhoan.getRole())) {
-//                // Nếu là nhân viên, bạn có thể trả về đối tượng TaiKhoan đã kiểm tra vai trò
-//                taiKhoan.setMatKhau("");  // Xóa mật khẩu trước khi trả về
-//                return taiKhoan;  // Trả về nhân viên
-//            } else if ("khách hàng".equalsIgnoreCase(taiKhoan.getRole())) {
-//                // Nếu là khách hàng, bạn cũng có thể trả về đối tượng TaiKhoan
-//                taiKhoan.setMatKhau("");  // Xóa mật khẩu trước khi trả về
-//                return taiKhoan;  // Trả về khách hàng
+//                // Nếu là nhân viên, trả về đối tượng TaiKhoan đã kiểm tra vai trò
+//                taiKhoan.setMatKhau(""); // Xóa mật khẩu trước khi trả về
+//                return taiKhoan; // Trả về nhân viên
+//            } else if ("Khách Hàng".equalsIgnoreCase(taiKhoan.getRole())) {
+//                // Nếu là khách hàng, trả về đối tượng TaiKhoan
+//                taiKhoan.setMatKhau(""); // Xóa mật khẩu trước khi trả về
+//                return taiKhoan; // Trả về khách hàng
 //            } else {
 //                // Nếu vai trò không hợp lệ
 //                throw new IllegalArgumentException("Vai trò người dùng không hợp lệ.");
 //            }
 //        } else {
 //            // Trường hợp tài khoản không tồn tại hoặc mật khẩu sai
-//            throw new IllegalArgumentException("Tên tài khoản hoặc mật khẩu không chính xác");
+//            throw new IllegalArgumentException("Tên tài khoản hoặc mật khẩu không chính xác.");
 //        }
-        if (taiKhoan != null && taiKhoan.getMatKhau().equals(matKhau)) {
-            // Kiểm tra nếu vai trò là Admin thì không cho phép đăng nhập
-            if ("admin".equalsIgnoreCase(taiKhoan.getRole())) {
-                throw new IllegalArgumentException("Tài khoản Admin không được phép đăng nhập.");
-            }
-
-            // Kiểm tra vai trò của người dùng
-            if ("Nhân Viên".equalsIgnoreCase(taiKhoan.getRole())) {
-                // Nếu là nhân viên, trả về đối tượng TaiKhoan đã kiểm tra vai trò
-                taiKhoan.setMatKhau(""); // Xóa mật khẩu trước khi trả về
-                return taiKhoan; // Trả về nhân viên
-            } else if ("Khách Hàng".equalsIgnoreCase(taiKhoan.getRole())) {
-                // Nếu là khách hàng, trả về đối tượng TaiKhoan
-                taiKhoan.setMatKhau(""); // Xóa mật khẩu trước khi trả về
-                return taiKhoan; // Trả về khách hàng
-            } else {
-                // Nếu vai trò không hợp lệ
-                throw new IllegalArgumentException("Vai trò người dùng không hợp lệ.");
-            }
-        } else {
-            // Trường hợp tài khoản không tồn tại hoặc mật khẩu sai
-            throw new IllegalArgumentException("Tên tài khoản hoặc mật khẩu không chính xác.");
-        }
-
-    }
+//
+//    }
 
     public void sendPasswordResetEmail(String email) {
         try {
@@ -325,5 +351,64 @@ public class TaiKhoanService {
 
     public TaiKhoan save(TaiKhoan taiKhoan) {
         return repository.save(taiKhoan);
+    }
+
+    //qly tai khoan admin
+    public Page<TaiKhoan> getAll(String tenTaiKhoan, String sdt, Boolean trangThai, String role, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+        if (tenTaiKhoan != null && !tenTaiKhoan.isEmpty() || sdt != null && !sdt.isEmpty()) {
+            // Tìm theo tên hoặc số điện thoại
+            return repository.findTenTaiKhoanContainingOrSdtContainingByRole(tenTaiKhoan, sdt, role, pageable);
+        } else if (trangThai != null) {
+            // Tìm theo trạng thái
+            return repository.findByTrangThaiAndRole(trangThai, role, pageable);
+        } else {
+            // Lấy tất cả tài khoản
+            return repository.findByRole(role,pageable);
+        }
+    }
+
+    public boolean updateStatus(UUID userId, boolean trangThai) {
+        TaiKhoan taiKhoan = repository.findById(userId).orElse(null);
+        if (taiKhoan != null) {
+            taiKhoan.setTrangThai(trangThai);
+            repository.save(taiKhoan);
+            return true;
+        } else {
+            System.out.println("Không tìm thấy người dùng với ID: " + userId);
+            return false;
+        }
+    }
+
+    public TaiKhoan getUserById(UUID userId) {
+        return repository.findById(userId).orElse(null);  // Tìm người dùng theo UUID
+    }
+
+    public boolean deleteTaiKhoan(TaiKhoan taiKhoan) {
+        try {
+            // Xóa tài khoản nếu tồn tại
+            NguoiDung nguoiDung = taiKhoan.getNguoiDung();
+            if (nguoiDung != null) {
+                nguoiDungRepository.delete(nguoiDung);
+            }
+
+            // Xóa người dùng
+            repository.delete(taiKhoan);
+            return true;
+        } catch (Exception e) {
+            return false;  // Nếu có lỗi xảy ra trong quá trình xóa
+        }
+    }
+
+    public TaiKhoan updateUserRole(UUID id, String role) {
+        TaiKhoan taiKhoan = repository.findById(id).orElse(null);
+        if (taiKhoan != null) {
+            taiKhoan.setRole(role);
+            return repository.save(taiKhoan);
+
+        } else {
+            System.out.println("Không tìm thấy người dùng với ID: " + id);
+            return null;
+        }
     }
 }

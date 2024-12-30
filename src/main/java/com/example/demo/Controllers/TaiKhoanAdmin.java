@@ -12,6 +12,9 @@ import com.example.demo.Services.SanPhamService;
 import com.example.demo.Services.TaiKhoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/loginAuth")
+    @RequestMapping("/api/loginAuth")
 public class TaiKhoanAdmin {
 
     @Autowired
@@ -43,24 +46,77 @@ public class TaiKhoanAdmin {
     }
 
 
-    @GetMapping("/customer")
-    public List<NguoiDung> getCustomer(@RequestParam(defaultValue = "khách hàng") String role) {
-        // Gọi service để lấy danh sách người dùng theo role
-        return nguoiDungService.getUsersByRole(role);
-    }
+//    @GetMapping("/customer")
+//    public List<NguoiDung> getCustomer(@RequestParam(defaultValue = "khách hàng") String role) {
+//        // Gọi service để lấy danh sách người dùng theo role
+//        return nguoiDungService.getUsersByRole(role);
+//    }
+
+    //    @GetMapping("/employee")
+//    public List<NguoiDung> getStaff(@RequestParam(defaultValue = "Nhân viên") String role) {
+//        // Gọi service để lấy danh sách người dùng theo role
+//        return nguoiDungService.getUsersByRole(role);
+//    }
+//    @GetMapping("/employee")
+//    public Page<NguoiDung> getStaff(
+//            @RequestParam(defaultValue = "Nhân viên" ,required = false) String role,
+//            @RequestParam(value = "hoTen" ,required = false) String hoTen,
+//            @RequestParam(value = "sdt" ,required = false) String sdt,
+//            @RequestParam(value = "trangThai" ,required = false) Boolean trangThai,
+//            @RequestParam(value = "pageNumber" ,defaultValue = "0") int pageNumber
+//    ) {
+//        // Kiểm tra từng điều kiện
+//        if ((hoTen != null && !hoTen.isEmpty()) || (sdt != null && !sdt.isEmpty())) {
+//            return nguoiDungService.getUsersByHoTenOrSdtAndRole(hoTen, sdt, role, pageNumber);
+//        } else if (trangThai != null) {
+//            return nguoiDungService.getUsersByTrangThaiAndRole(trangThai, role, pageNumber);
+//        } else {
+//            return nguoiDungService.getUsersByRole(role, pageNumber);
+//        }
+//
+//    }
 
     @GetMapping("/employee")
-    public List<NguoiDung> getStaff(@RequestParam(defaultValue = "Nhân viên") String role) {
-        // Gọi service để lấy danh sách người dùng theo role
-        return nguoiDungService.getUsersByRole(role);
+    public Page<TaiKhoan> getStaff(
+            @RequestParam(defaultValue = "Nhân viên" ,required = false) String role,
+            @RequestParam(value = "tenTaiKhoan" ,required = false) String tenTaiKhoan,
+            @RequestParam(value = "sdt" ,required = false) String sdt,
+            @RequestParam(value = "trangThai" ,required = false) Boolean trangThai,
+            @RequestParam(value = "pageNumber" ,defaultValue = "0") int pageNumber
+    ) {
+
+            return taiKhoanService.getAll(tenTaiKhoan,sdt,trangThai,role,pageNumber);
+
+
     }
 
+    @GetMapping("/customer")
+    public Page<TaiKhoan> getCustomer(
+            @RequestParam(defaultValue = "Khách hàng" ,required = false) String role,
+            @RequestParam(required = false) String tenTaiKhoan,
+            @RequestParam(required = false) String sdt,
+            @RequestParam(required = false) Boolean trangThai,
+            @RequestParam(defaultValue = "0") int pageNumber
+    ) {
+
+        return taiKhoanService.getAll(tenTaiKhoan,sdt,trangThai,role,pageNumber);
+
+//        // Kiểm tra từng điều kiện
+//        if ((hoTen != null && !hoTen.isEmpty()) || (sdt != null && !sdt.isEmpty())) {
+//            return nguoiDungService.getUsersByHoTenOrSdtAndRole(hoTen, sdt, role, pageNumber);
+//        } else if (trangThai != null) {
+//            return nguoiDungService.getUsersByTrangThaiAndRole(trangThai, role, pageNumber);
+//        } else {
+//            return nguoiDungService.getUsersByRole(role, pageNumber);
+//        }
+
+    }
 
     @PutMapping("/updateStatus/{userId}")
     public String updateStatus(@PathVariable("userId") UUID userId, @RequestParam("trangThai") boolean trangThai) {
         System.out.println("User ID: " + userId);
         System.out.println("Trang Thai: " + trangThai);
-        boolean result = nguoiDungService.updateStatus(userId, trangThai);
+        boolean result = taiKhoanService.updateStatus(userId, trangThai);
         if (result) {
             return "Trạng thái người dùng đã được cập nhật thành công.";
         } else {
@@ -69,8 +125,8 @@ public class TaiKhoanAdmin {
     }
 
     @PutMapping("/updateUser/{id}")
-    public ResponseEntity<NguoiDung> updateUser(@PathVariable UUID id, @RequestBody NguoiDung updatedUser) {
-        NguoiDung updated = nguoiDungService.updateUser(id, updatedUser);
+    public ResponseEntity<TaiKhoan> updateUser(@PathVariable UUID id, @RequestBody TaiKhoan updatedUser) {
+        TaiKhoan updated = taiKhoanService.update(id, updatedUser);
         if (updated != null) {
             return ResponseEntity.ok(updated);  // Trả về người dùng đã cập nhật
         } else {
@@ -79,8 +135,8 @@ public class TaiKhoanAdmin {
     }
 
     @PutMapping("/updateRole/{id}")
-    public ResponseEntity<NguoiDung> updateRole(@PathVariable UUID id, @RequestParam String role) {
-        NguoiDung updated = nguoiDungService.updateUserRole(id, role);
+    public ResponseEntity<TaiKhoan> updateRole(@PathVariable UUID id, @RequestParam String role) {
+        TaiKhoan updated = taiKhoanService.updateUserRole(id, role);
         if (updated != null) {
             return ResponseEntity.ok(updated);  // Trả về người dùng đã cập nhật
         } else {
@@ -106,10 +162,10 @@ public class TaiKhoanAdmin {
 
 
     @GetMapping("/getUser/{userId}")
-    public ResponseEntity<NguoiDung> getUserById(@PathVariable String userId) {
+    public ResponseEntity<TaiKhoan> getUserById(@PathVariable String userId) {
         try {
             // Gọi service để lấy người dùng
-            NguoiDung user = nguoiDungService.getUserById(UUID.fromString(userId));  // Chuyển đổi String thành UUID
+            TaiKhoan user = taiKhoanService.getUserById(UUID.fromString(userId));  // Chuyển đổi String thành UUID
             if (user != null) {
                 return ResponseEntity.ok(user);  // Trả về thông tin người dùng
             } else {
@@ -124,11 +180,11 @@ public class TaiKhoanAdmin {
     // Xóa người dùng và tài khoản liên quan
     @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") UUID id) {
-        NguoiDung userToDelete = nguoiDungService.getUserById(id);
+        TaiKhoan userToDelete = taiKhoanService.getUserById(id);
 
         if (userToDelete != null) {
             // Gọi service để xóa người dùng và tài khoản liên quan
-            boolean deleted = nguoiDungService.deleteNguoiDung(userToDelete);
+            boolean deleted = taiKhoanService.deleteTaiKhoan(userToDelete);
             if (deleted) {
                 return ResponseEntity.ok("User deleted successfully");
             } else {
@@ -155,7 +211,7 @@ public class TaiKhoanAdmin {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "12") int size) {
         try {
-            Page<SanPhamAdminDto> products = sanPhamService.getProducts(tenSP, soLuongTon, sortByPrice, page, size,trangThai);
+            Page<SanPhamAdminDto> products = sanPhamService.getProducts(tenSP, soLuongTon, sortByPrice, page, size, trangThai);
             return ResponseEntity.ok(products);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

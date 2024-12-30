@@ -49,6 +49,7 @@ public class GiamGiaController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @PutMapping("/discount/{id}")
     public ResponseEntity<GiamGia> update(@PathVariable UUID id, @RequestBody GiamGia giamGia) {
         GiamGia gg = service.update(id, giamGia);
@@ -80,8 +81,14 @@ public class GiamGiaController {
     }
 
     @GetMapping("/page")
-    public Page<GiamGia> getAllGiamGia(@RequestParam(defaultValue = "0") int pageNumber) {
-        return service.getAll(pageNumber);
+    public Page<GiamGia> getAllGiamGia(@RequestParam(defaultValue = "0") int pageNumber,
+                                       @RequestParam(value = "ten", required = false) String ten,
+                                       @RequestParam(value = "ma", required = false) String ma,
+                                       @RequestParam(value = "trangThai", required = false) Boolean trangThai
+//                                       @RequestParam(value = "giamGia", required = false) String giamGia
+    ) {
+
+        return service.getGiamGia(pageNumber, ten, ma, trangThai);
     }
 
     @PostMapping
@@ -101,11 +108,10 @@ public class GiamGiaController {
 //        }
 
         // Lưu thương hiệu vào cơ sở dữ liệu
-        GiamGia createdGiamGia= service.add(giamGia);
+        GiamGia createdGiamGia = service.add(giamGia);
 
         return new ResponseEntity<>(createdGiamGia, HttpStatus.CREATED);
     }
-
 
 
     @PutMapping("/upStatusDiscount/{id}")
@@ -121,4 +127,10 @@ public class GiamGiaController {
         }
     }
 
+    // Cập nhật trạng thái giảm giá hết hạn
+    @PutMapping("/update-status")
+    public ResponseEntity<Void> updateExpiredDiscounts() {
+        service.updateExpiredDiscounts();
+        return ResponseEntity.ok().build();
+    }
 }

@@ -2,6 +2,7 @@ package com.example.demo.Controllers;
 
 import com.example.demo.Entities.MauSac;
 import com.example.demo.Entities.Size;
+import com.example.demo.Entities.ThuongHieu;
 import com.example.demo.Services.MauSacService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,9 +26,15 @@ public class MauSacController {
         return msService.getAll();
     }
 
+//    @GetMapping("/page")
+//    public Page<MauSac> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber) {
+//        return msService.getAll(pageNumber);
+//    }
+
     @GetMapping("/page")
-    public Page<MauSac> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber) {
-        return msService.getAll(pageNumber);
+    public Page<MauSac> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber,
+                                             @RequestParam(value = "ten", required = false) String ten) {
+        return msService.getAll(pageNumber, ten);
     }
 
     @GetMapping("/{id}")

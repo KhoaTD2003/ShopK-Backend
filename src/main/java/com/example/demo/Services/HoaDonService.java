@@ -77,6 +77,11 @@ public class HoaDonService {
         Pageable pageable = PageRequest.of(page, size);  // Tạo Pageable từ số trang và kích thước trang
         return repository.findByTrangThaiAndGhiChuContaining(trangThai, ghiChu, pageable);
     }
+
+    public HoaDon findById(UUID id) {
+        Optional<HoaDon> hoaDon = repository.findById(id);
+        return hoaDon.orElse(null); // Trả về null nếu không tìm thấy
+    }
 //    public Page<HoaDon> getHoaDon2(int pageNumber, int pageSize, String maHoaDon, String sdt, String ghiChu, String trangThai) {
 //        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("ngayTao").descending());
 //
@@ -125,6 +130,25 @@ public class HoaDonService {
             throw new RuntimeException("không tìm thấy Hóa Đơn ID "+id);
         }
     }
+
+    public HoaDon updateCancel(UUID id) {
+        // Tìm hóa đơn theo id
+        Optional<HoaDon> optionalHoaDon = repository.findById(id);
+
+        if (optionalHoaDon.isPresent()) {
+            HoaDon hoaDon = optionalHoaDon.get();
+
+            // Cập nhật trạng thái hóa đơn thành "Đã hủy"
+            hoaDon.setTrangThai("Cancle");
+
+            // Lưu lại hóa đơn với trạng thái mới
+            return repository.save(hoaDon);
+        } else {
+            // Nếu không tìm thấy hóa đơn với id, ném ngoại lệ với thông báo chi tiết
+            throw new RuntimeException("Không tìm thấy hóa đơn với ID: " + id);
+        }
+    }
+
 
     // delete dữ liệu theo id
     public void delete(UUID id){

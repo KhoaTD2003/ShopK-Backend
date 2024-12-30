@@ -2,6 +2,7 @@ package com.example.demo.Controllers;
 
 import com.example.demo.Entities.Size;
 import com.example.demo.Entities.TheLoai;
+import com.example.demo.Entities.ThuongHieu;
 import com.example.demo.Services.SizeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,9 +26,15 @@ public class SizeController {
         return sService.getAll();
     }
 
+//    @GetMapping("/page")
+//    public Page<Size> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber) {
+//        return sService.getAll(pageNumber);
+//    }
+
     @GetMapping("/page")
-    public Page<Size> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber) {
-        return sService.getAll(pageNumber);
+    public Page<Size> getAllThuongHieu(@RequestParam(defaultValue = "0") int pageNumber,
+                                             @RequestParam(value = "ten", required = false) String ten) {
+        return sService.getAll(pageNumber, ten);
     }
 
     @GetMapping("/{id}")

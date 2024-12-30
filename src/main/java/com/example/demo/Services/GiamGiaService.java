@@ -4,6 +4,7 @@ import com.example.demo.Entities.GiamGia;
 import com.example.demo.Entities.SanPham;
 import com.example.demo.Entities.Size;
 import com.example.demo.Repositories.GiamGiaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -94,6 +96,22 @@ public class GiamGiaService {
         return repository.findAll(pageable);
     }
 
+    public Page<GiamGia> getGiamGia(int pageNumber, String ten, String ma, Boolean trangThai) {
+        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+
+        if (ten != null && !ten.isEmpty()|| ma != null && !ma.isEmpty()) {
+            return repository.findByTenContainingOrMaContaining(ten, ma, pageable);
+        } else if (trangThai != null) {
+            return repository.findByTrangThai(trangThai, pageable);
+        }
+//        else if (giamGia != null && !giamGia.isEmpty()) {
+//            return repository.findByGiamGiaType(giamGia, pageable);
+//        }
+        else {
+            return repository.findAll(pageable); // Trả về tất cả nếu không có điều kiện
+        }
+    }
+
     public String GenarateSizeCode() {
         // Lấy mã sản phẩm lớn nhất từ cơ sở dữ liệu
         Integer maxBrandNumber = repository.getMaxDiscountCode();
@@ -126,5 +144,12 @@ public class GiamGiaService {
             System.out.println("Không tìm thấy sp với ID: " + id);
             return false;
         }
+    }
+
+    // Cập nhật trạng thái giảm giá khi hết hạn
+    @Transactional
+    public void updateExpiredDiscounts() {
+        Date today = new Date();
+        repository.updateExpiredDiscounts(today);
     }
 }

@@ -1,6 +1,9 @@
 package com.example.demo.Repositories;
 
 import com.example.demo.Entities.Size;
+import com.example.demo.Entities.ThuongHieu;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,5 +19,7 @@ public interface SizeRepository extends JpaRepository<Size, UUID> {
     boolean existsByMa(String ma);
 
     boolean existsByTen(String ten); // Tự động sinh truy vấn kiểm tra tên
+
+    Page<Size> findByTenContaining(String ten, Pageable pageable);
 
 }

@@ -3,6 +3,7 @@ package com.example.demo.Services;
 import com.example.demo.Entities.MauSac;
 import com.example.demo.Entities.Size;
 import com.example.demo.Entities.TheLoai;
+import com.example.demo.Entities.XuatXu;
 import com.example.demo.Repositories.TheLoaiRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,9 +30,27 @@ public class TheLoaiService {
         return this.theLoaiRepo.save(theLoai);
     }
 
-    public Page<TheLoai> getAll(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+//    public Page<TheLoai> getAll(int pageNumber) {
+//        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+//        return theLoaiRepo.findAll(pageable);
+//    }
+
+//    public Page<TheLoai> getAll(int pageNumber, String ten) {
+//        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("ngayTao").descending());
+//        if (ten != null && !ten.isEmpty()) {
+//            theLoaiRepo.findByTenContaining(ten, pageable);
+//        }
+//        return theLoaiRepo.findAll(pageable);
+//
+//    }
+
+    public Page<TheLoai> getAll(int pageNumber, String ten) {
+        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("ngayTao").descending());
+        if (ten != null && !ten.isEmpty()) {
+            return theLoaiRepo.findByTenContaining(ten, pageable);
+        }
         return theLoaiRepo.findAll(pageable);
+
     }
 
     public String GenarateCategoryCode() {

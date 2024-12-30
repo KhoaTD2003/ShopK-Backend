@@ -3,6 +3,7 @@ package com.example.demo.Services;
 import com.example.demo.Entities.MauSac;
 import com.example.demo.Entities.TheLoai;
 import com.example.demo.Entities.ThuongHieu;
+import com.example.demo.Entities.XuatXu;
 import com.example.demo.Repositories.MauSacRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,9 +25,17 @@ public class MauSacService {
         return msRepo.findAll();
     }
 
-    public Page<MauSac> getAll(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+    //    public Page<MauSac> getAll(int pageNumber) {
+//        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+//        return msRepo.findAll(pageable);
+//    }
+    public Page<MauSac> getAll(int pageNumber, String ten) {
+        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("ngayTao").descending());
+        if (ten != null && !ten.isEmpty()) {
+            return msRepo.findByTenContaining(ten, pageable);
+        }
         return msRepo.findAll(pageable);
+
     }
 
     public String GenarateColorCode() {
@@ -42,6 +51,7 @@ public class MauSacService {
         int newBrandNumber = maxBrandNumber + 1;
         return String.format("MS%3d", newBrandNumber);
     }
+
     // Kiểm tra mã sản phẩm đã tồn tại hay chưa
     public boolean isColorCodeExist(String ma) {
         return msRepo.existsByMa(ma); // Kiểm tra mã sản phẩm có tồn tại trong cơ sở dữ liệu
@@ -51,13 +61,13 @@ public class MauSacService {
         return msRepo.existsByTen(name); // Gọi repo để kiểm tra
     }
 
-    public MauSac add(MauSac mauSac){
+    public MauSac add(MauSac mauSac) {
         return msRepo.save(mauSac);
     }
 
-    public MauSac update(UUID id, MauSac mauSac){
+    public MauSac update(UUID id, MauSac mauSac) {
         Optional<MauSac> optionalMauSac = msRepo.findById(id);
-        if(optionalMauSac.isPresent()){
+        if (optionalMauSac.isPresent()) {
             MauSac ms = optionalMauSac.get();
             ms.setMa(mauSac.getMa());
             ms.setTen(mauSac.getTen());
@@ -76,6 +86,7 @@ public class MauSacService {
             throw new RuntimeException("Không tìm thấy với ID: " + id);
         }
     }
+
     public MauSac findById(UUID id) {
         return msRepo.findById(id).orElse(null);
     }

@@ -25,9 +25,18 @@ public class ChatLieuService {
         return repository.findAll();
     }
 
-    public Page<ChatLieu> getAll(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+//    public Page<ChatLieu> getAll(int pageNumber) {
+//        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+//        return repository.findAll(pageable);
+//    }
+
+    public Page<ChatLieu> getAll(int pageNumber, String ten) {
+        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("ngayTao").descending());
+        if (ten != null && !ten.isEmpty()) {
+            return repository.findByTenContaining(ten, pageable);
+        }
         return repository.findAll(pageable);
+
     }
 
     public String GenarateMaterialCode() {

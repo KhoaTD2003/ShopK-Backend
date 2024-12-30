@@ -1,6 +1,8 @@
 package com.example.demo.Repositories;
 
 import com.example.demo.Entities.TaiKhoan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,4 +35,26 @@ public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, UUID> {
     void delete(TaiKhoan taiKhoan);
 
 
+    //admin
+    // Tìm kiếm tất cả tài khoản với phân trang
+    Page<TaiKhoan> findByRole(String role, Pageable pageable);
+
+    // Tìm kiếm tài khoản theo tên/số điện thoại và role
+    @Query("SELECT t FROM TaiKhoan t WHERE (t.tenTaiKhoan LIKE %:tenTaiKhoan% OR t.sdt LIKE %:sdt%) AND t.role = :role")
+    Page<TaiKhoan> findTenTaiKhoanContainingOrSdtContainingByRole(
+            @Param("tenTaiKhoan") String tenTaiKhoan,
+            @Param("sdt") String sdt,
+            @Param("role") String role,
+            Pageable pageable);
+
+    // Tìm kiếm tài khoản theo trạng thái và role
+    @Query("SELECT t FROM TaiKhoan t WHERE t.trangThai = :trangThai AND t.role = :role")
+    Page<TaiKhoan> findByTrangThaiAndRole(
+            @Param("trangThai") boolean trangThai,
+            @Param("role") String role,
+            Pageable pageable);
+
+//    // Tìm kiếm tài khoản theo tên hoặc số điện thoại và trạng thái
+//    Page<TaiKhoan> findByTenTaiKhoanContainingIgnoreCaseOrSdtContainingAndTrangThai(
+//            String tenTaiKhoan, String sdt, boolean trangThai, Pageable pageable);
 }

@@ -25,9 +25,18 @@ public class XuatXuService {
         return this.xuatXuRepo.findAll();
     }
 
-    public Page<XuatXu> getAll(int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+//    public Page<XuatXu> getAll(int pageNumber) {
+//        Pageable pageable = PageRequest.of(pageNumber, 12, Sort.by("ngayTao").descending());
+//        return xuatXuRepo.findAll(pageable);
+//    }
+
+    public Page<XuatXu> getAll(int pageNumber, String ten) {
+        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("ngayTao").descending());
+        if (ten != null && !ten.isEmpty()) {
+            return xuatXuRepo.findByTenContaining(ten, pageable);
+        }
         return xuatXuRepo.findAll(pageable);
+
     }
 
     public String GenarateOriginCode() {

@@ -85,7 +85,7 @@ public class TaiKhoanController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TaiKhoan> login(@RequestParam String tenTaiKhoan, @RequestParam String matKhau) {
+    public ResponseEntity<?> login(@RequestParam String tenTaiKhoan, @RequestParam String matKhau) {
         try {
             TaiKhoan taiKhoan = taiKhoanService.login(tenTaiKhoan, matKhau);
             return ResponseEntity.ok(taiKhoan);
