@@ -1,7 +1,9 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.Dtos.SanPhamDto;
+import com.example.demo.Dtos.TopSellingProductDTO;
 import com.example.demo.Entities.SanPham;
+import com.example.demo.Services.ChiTietHoaDonService;
 import com.example.demo.Services.SanPhamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,9 @@ public class SanPhamController {
 
     @Autowired
     private SanPhamService spService;
+
+    @Autowired
+    private ChiTietHoaDonService chiTietHoaDonService;
 
     @GetMapping()
     public Page<SanPhamDto> getAll(@RequestParam(value = "search", required = false) String search,
@@ -104,4 +109,9 @@ public class SanPhamController {
         }
     }
 
+    @GetMapping("/bestseller")
+    public ResponseEntity<List<TopSellingProductDTO>> getTopSellingProducts() {
+        List<TopSellingProductDTO> topProducts = chiTietHoaDonService.getTop10SellingProducts();
+        return ResponseEntity.ok(topProducts);
+    }
 }

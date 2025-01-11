@@ -45,7 +45,7 @@ public class XuatXuService {
 
         // Nếu không có sản phẩm nào, bắt đầu từ SP001
         if (maxBrandNumber == null) {
-            return "CL01";
+            return "XX01";
         }
 
         // Tăng số lên 1 và tạo mã mới theo định dạng SPxxx

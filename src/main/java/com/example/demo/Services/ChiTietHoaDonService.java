@@ -1,11 +1,14 @@
 package com.example.demo.Services;
 
 import com.example.demo.Dtos.ChiTietHoaDonDto;
+import com.example.demo.Dtos.TopSellingProductDTO;
 import com.example.demo.Entities.ChiTietHoaDon;
 import com.example.demo.Entities.HoaDon;
 import com.example.demo.Repositories.HoaDonChiTietRepository;
 import com.example.demo.Repositories.HoaDonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -79,6 +82,12 @@ public class ChiTietHoaDonService {
         }).collect(Collectors.toList());
     }
 
+
+
+    public List<TopSellingProductDTO> getTop10SellingProducts() {
+        Pageable pageable = PageRequest.of(0, 20); // Lấy 10 sản phẩm đầu tiên
+        return repository.findTopSellingProducts(pageable);
+    }
 }
 
 //    List<ChiTietHoaDon> chiTietHoaDonList = repository.findByHoaDonId(idHoaDon);

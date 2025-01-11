@@ -14,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -167,4 +170,85 @@ public class HoaDonController {
 //    public List<HoaDon> getCancelledHoaDons() {
 //        return hoaDonService.getCancelledHoaDons();  // Phương thức lấy hóa đơn đã hủy
 //    }
+
+    @GetMapping("/unpaid")
+    public long getUnpaid(@RequestParam String timePeriod, @RequestParam String startDate) {
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDateTime startOfPeriod = null;
+        LocalDateTime endOfPeriod = null;
+
+        if ("day".equalsIgnoreCase(timePeriod)) {
+            startOfPeriod = start.atStartOfDay();
+            endOfPeriod = start.atTime(23, 59, 59);
+        } else if ("week".equalsIgnoreCase(timePeriod)) {
+            startOfPeriod = start.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY)).atStartOfDay();
+            endOfPeriod = start.with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SUNDAY)).atTime(23, 59, 59);
+        } else if ("month".equalsIgnoreCase(timePeriod)) {
+            startOfPeriod = start.withDayOfMonth(1).atStartOfDay();  // Ngày đầu tháng
+            endOfPeriod = start.withDayOfMonth(start.lengthOfMonth()).atTime(23, 59, 59);  // Ngày cuối tháng
+        } else {
+            throw new IllegalArgumentException("Invalid time period. Must be 'day', 'week', or 'month'.");
+        }
+        // In ra giá trị của startOfPeriod và endOfPeriod
+        System.out.println("Start of period: " + startOfPeriod);
+        System.out.println("End of period: " + endOfPeriod);
+        return hoaDonService.countUnpaid(timePeriod, startOfPeriod, endOfPeriod);
+    }
+
+    // API lấy tổng số hóa đơn đã thanh toán theo thời gian (ngày, tuần hoặc tháng)
+    @GetMapping("/paid")
+    public long getPaid(@RequestParam String timePeriod, @RequestParam String startDate) {
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDateTime startOfPeriod = null;
+        LocalDateTime endOfPeriod = null;
+
+        if ("day".equalsIgnoreCase(timePeriod)) {
+            startOfPeriod = start.atStartOfDay();
+            endOfPeriod = start.atTime(23, 59, 59);
+        } else if ("week".equalsIgnoreCase(timePeriod)) {
+            startOfPeriod = start.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY)).atStartOfDay();
+            endOfPeriod = start.with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SUNDAY)).atTime(23, 59, 59);
+        } else if ("month".equalsIgnoreCase(timePeriod)) {
+            startOfPeriod = start.withDayOfMonth(1).atStartOfDay();  // Ngày đầu tháng
+            endOfPeriod = start.withDayOfMonth(start.lengthOfMonth()).atTime(23, 59, 59);  // Ngày cuối tháng
+        } else {
+            throw new IllegalArgumentException("Invalid time period. Must be 'day', 'week', or 'month'.");
+        }
+
+        return hoaDonService.countPaid(timePeriod, startOfPeriod, endOfPeriod);
+    }
+
+    // API lấy tổng số hóa đơn đã hủy theo thời gian (ngày, tuần hoặc tháng)
+    @GetMapping("/cancelled")
+    public long getCancelled(@RequestParam String timePeriod, @RequestParam String startDate) {
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDateTime startOfPeriod = null;
+        LocalDateTime endOfPeriod = null;
+
+        if ("day".equalsIgnoreCase(timePeriod)) {
+            startOfPeriod = start.atStartOfDay();
+            endOfPeriod = start.atTime(23, 59, 59);
+        } else if ("week".equalsIgnoreCase(timePeriod)) {
+            startOfPeriod = start.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY)).atStartOfDay();
+            endOfPeriod = start.with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SUNDAY)).atTime(23, 59, 59);
+        } else if ("month".equalsIgnoreCase(timePeriod)) {
+            startOfPeriod = start.withDayOfMonth(1).atStartOfDay();  // Ngày đầu tháng
+            endOfPeriod = start.withDayOfMonth(start.lengthOfMonth()).atTime(23, 59, 59);  // Ngày cuối tháng
+        } else {
+            throw new IllegalArgumentException("Invalid time period. Must be 'day', 'week', or 'month'.");
+        }
+
+        return hoaDonService.countCancelled(timePeriod, startOfPeriod, endOfPeriod);
+    }
+
+
+//    @GetMapping("/total-revenue")
+//    public Double getTotalRevenue() {
+//        return hoaDonService.calculateTotalRevenue();
+//    }
+
+    @GetMapping("/revenue")
+    public BigDecimal getTotalRevenue(@RequestParam("timePeriod") String timePeriod) {
+        return hoaDonService.calculateRevenueByDateRange(timePeriod);
+    }
 }

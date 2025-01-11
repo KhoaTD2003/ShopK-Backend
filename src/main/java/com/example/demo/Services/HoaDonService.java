@@ -16,8 +16,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -260,4 +264,76 @@ public class HoaDonService {
 //    public List<HoaDon> getCancelledHoaDons() {
 //        return repository.findByTrangThai(HoaDonStatus.CANCELLED);
 //    }
-}
+
+    // Lấy tổng số hóa đơn "Chưa Thanh Toán" theo thời gian (ngày hoặc tuần)
+    public long countUnpaid(String timePeriod, LocalDateTime start, LocalDateTime end) {
+        if ("day".equalsIgnoreCase(timePeriod)) {
+            return repository.countUnpaidByDay(start, end);
+        } else if ("week".equalsIgnoreCase(timePeriod)) {
+            return repository.countUnpaidByWeek(start, end);
+        }else if ("month".equalsIgnoreCase(timePeriod)) {
+            int month = start.getMonthValue();
+            int year = start.getYear();
+            return repository.countUnpaidByMonth(month, year);        }
+        throw new IllegalArgumentException("Invalid time period. Must be 'day' or 'week'.");
+    }
+
+    // Các phương thức khác vẫn giữ nguyên, ví dụ:
+    // Lấy tổng số hóa đơn "Đã Thanh Toán" theo thời gian (ngày hoặc tuần)
+    public long countPaid(String timePeriod, LocalDateTime start, LocalDateTime end) {
+        if ("day".equalsIgnoreCase(timePeriod)) {
+            return repository.countPaidByDay(start, end);
+        } else if ("week".equalsIgnoreCase(timePeriod)) {
+            return repository.countPaidByWeek(start, end);
+        }else if ("month".equalsIgnoreCase(timePeriod)) {
+            int month = start.getMonthValue();
+            int year = start.getYear();
+            return repository.countPaidByMonth(month,year);
+        }
+        throw new IllegalArgumentException("Invalid time period. Must be 'day' or 'week'.");
+    }
+
+    // Lấy tổng số hóa đơn "Đã Hủy" theo thời gian (ngày hoặc tuần)
+    public long countCancelled(String timePeriod, LocalDateTime start, LocalDateTime end) {
+        if ("day".equalsIgnoreCase(timePeriod)) {
+            return repository.countCancelledByDay(start, end);
+        } else if ("week".equalsIgnoreCase(timePeriod)) {
+            return repository.countCancelledByWeek(start, end);
+        }else if ("month".equalsIgnoreCase(timePeriod)) {
+            return repository.countCancelledByMonth(start);
+        }
+        throw new IllegalArgumentException("Invalid time period. Must be 'day' or 'week'.");
+    }
+
+    // Lấy tổng doanh thu (tổng tiền) cho hóa đơn đã thanh toán
+    public Double calculateTotalRevenue() {
+        return repository.calculateTotalRevenue();
+    }
+
+    // Tính tổng doanh thu theo trạng thái và khoảng thời gian (ngày, tuần, tháng)
+    public BigDecimal calculateRevenueByDateRange(String timePeriod) {
+        LocalDateTime startDate = null;
+        LocalDateTime endDate = null;
+
+        // Tính toán ngày bắt đầu và ngày kết thúc theo khoảng thời gian
+        switch (timePeriod.toLowerCase()) {
+            case "day":
+                startDate = LocalDate.now().atStartOfDay(); // Chuyển LocalDate thành LocalDateTime
+                endDate = startDate.plusDays(1).minusNanos(1); // Đến hết ngày hôm nay
+                break;
+            case "week":
+                startDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay(); // Bắt đầu từ đầu tuần
+                endDate = startDate.plusWeeks(1).minusNanos(1); // Đến hết tuần này
+                break;
+            case "month":
+                startDate = LocalDate.now().withDayOfMonth(1).atStartOfDay(); // Bắt đầu từ ngày 1 của tháng
+                endDate = startDate.plusMonths(1).minusNanos(1); // Đến hết tháng này
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid time period: " + timePeriod);
+        }
+
+        // Gọi repository để tính tổng doanh thu
+        return repository.calculateRevenueByStatusAndDateRange(startDate, endDate);
+    }
+    }
