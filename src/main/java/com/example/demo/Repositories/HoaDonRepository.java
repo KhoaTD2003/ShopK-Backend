@@ -1,9 +1,13 @@
 package com.example.demo.Repositories;
 
+//import com.example.demo.Dtos.HoaDonDto;
+//import com.example.demo.Dtos.RevenuePerDayDto;
 import com.example.demo.Entities.HoaDon;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -83,5 +87,25 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, UUID> {
     // Tính tổng doanh thu theo trạng thái và khoảng thời gian (ngày, tuần, tháng)
      @Query("SELECT SUM(CAST(hd.tongTien AS java.math.BigDecimal)) FROM HoaDon hd WHERE hd.trangThai = 'Đã thanh toán' AND hd.ngayTao BETWEEN :startDate AND :endDate")
     BigDecimal calculateRevenueByStatusAndDateRange(LocalDateTime startDate, LocalDateTime endDate);
+
+//    @Query("SELECT SUM(CAST(h.tongTien AS float)) FROM HoaDon h WHERE FORMAT(h.ngayTao, 'yyyy-MM-dd') = :date")
+//    Double calculateTotalRevenueForDay(@Param("date") String date);
+
+//    @Query("SELECT FORMAT(hd.ngayTao, 'yyyy-MM-dd') AS date, SUM(CAST(hd.tongTien AS float)) " +
+//            "FROM HoaDon hd WHERE hd.ngayTao >= :startDate AND hd.ngayTao <= :endDate " +
+//            "GROUP BY FORMAT(hd.ngayTao, 'yyyy-MM-dd')")
+//    List<Object[]> calculateTotalRevenueForPeriod(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT FORMAT(hd.ngayTao, 'yyyy-MM-dd') AS date, SUM(CAST(hd.tongTien AS float)) " +
+            "FROM HoaDon hd WHERE hd.trangThai = 'Đã thanh toán' AND hd.ngayTao >= :startDate AND hd.ngayTao <= :endDate " +
+            "GROUP BY FORMAT(hd.ngayTao, 'yyyy-MM-dd')")
+    List<Object[]> calculateTotalRevenueForPaidInvoices(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT h FROM HoaDon h WHERE h.ngayTao BETWEEN :startOfDay AND :endOfDay")
+    List<HoaDon> findAllByToday(@Param("startOfDay") LocalDateTime startOfDay, @Param("endOfDay") LocalDateTime endOfDay);
+
+    @Modifying
+    @Query("UPDATE HoaDon h SET h.trangThai = 'Cancle' WHERE h.trangThai = 'Chua Thanh Toán' AND h.ngayTao <= :twoDaysAgo")
+    int updateUnpaidInvoicesToCanceled(@Param("twoDaysAgo") LocalDateTime twoDaysAgo);
 
 }

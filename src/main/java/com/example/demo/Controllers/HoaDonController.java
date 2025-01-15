@@ -1,6 +1,8 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.Dtos.ChiTietHoaDonDto;
+//import com.example.demo.Dtos.HoaDonDto;
+//import com.example.demo.Dtos.RevenuePerDayDto;
 import com.example.demo.Entities.ChiTietHoaDon;
 import com.example.demo.Entities.HoaDon;
 import com.example.demo.Entities.Size;
@@ -10,6 +12,7 @@ import com.example.demo.Services.HoaDonService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -100,6 +103,20 @@ public class HoaDonController {
     public ResponseEntity<HoaDon> updatehoaDon(@PathVariable UUID id, @RequestBody HoaDon hoaDonDetail) {
         HoaDon updateHoaDon = hoaDonService.update(id, hoaDonDetail);
         return ResponseEntity.ok(updateHoaDon);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getInvoiceById(@PathVariable("id") UUID id) {
+        try {
+            HoaDon hoaDon = hoaDonService.findById(id); // Gọi service để tìm hóa đơn
+            if (hoaDon == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hóa đơn không tồn tại");
+            }
+            return ResponseEntity.ok(hoaDon); // Trả về hóa đơn nếu tìm thấy
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi tìm hóa đơn: " + e.getMessage());
+        }
     }
 
     @PutMapping("/status/{id}")
@@ -250,5 +267,47 @@ public class HoaDonController {
     @GetMapping("/revenue")
     public BigDecimal getTotalRevenue(@RequestParam("timePeriod") String timePeriod) {
         return hoaDonService.calculateRevenueByDateRange(timePeriod);
+    }
+
+    // Lấy doanh thu theo thời gian (ngày, tháng, năm)
+    // Lấy tổng tiền theo ngày
+//    @GetMapping("/tongsotien/ngay")
+//    public ResponseEntity<Double> getDoanhThuTheoNgay(@RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
+//        Double doanhThu = hoaDonService.getDoanhThuTheoNgay(startDate, endDate);
+//        return ResponseEntity.ok(doanhThu);
+//    }
+//
+//    // Lấy tổng tiền theo tháng
+//    @GetMapping("/tongsotien/thang")
+//    public ResponseEntity<Double> getDoanhThuTheoThang(@RequestParam String month) {
+//        Double doanhThu = hoaDonService.getDoanhThuTheoThang(month);
+//        return ResponseEntity.ok(doanhThu);
+//    }
+//
+//    // Lấy tổng tiền theo năm
+//    @GetMapping("/tongsotien/nam")
+//    public ResponseEntity<Double> getDoanhThuTheoNam(@RequestParam String year) {
+//        Double doanhThu = hoaDonService.getDoanhThuTheoNam(year);
+//        return ResponseEntity.ok(doanhThu);
+//    }
+
+    @GetMapping("/total-revenue")
+//    public ResponseEntity<Double> getTotalRevenueForDay(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+//        Double totalRevenue = hoaDonService.getTotalRevenueForDay(date);
+//        return ResponseEntity.ok(totalRevenue);
+//    }
+    public List<Map<String, Object>> getRevenueForPeriod(
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
+        return hoaDonService.getRevenueForPeriod(startDate, endDate);
+    }
+
+    @GetMapping("/bill/today")
+    public ResponseEntity<List<HoaDon>> getTodayHoaDon() {
+        List<HoaDon> hoaDons = hoaDonService.getHoaDonByToday();
+        if (hoaDons.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(hoaDons);
     }
 }

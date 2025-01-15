@@ -1,12 +1,15 @@
 package com.example.demo.Services;
 
 import com.example.demo.Dtos.ChiTietHoaDonDto;
+//import com.example.demo.Dtos.HoaDonDto;
+//import com.example.demo.Dtos.RevenuePerDayDto;
 import com.example.demo.Entities.ChiTietHoaDon;
 import com.example.demo.Entities.HoaDon;
 import com.example.demo.Entities.MauSac;
 import com.example.demo.Repositories.HoaDonChiTietRepository;
 import com.example.demo.Repositories.HoaDonRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,12 +23,11 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+
 @Service
 public class HoaDonService {
 
@@ -315,25 +317,93 @@ public class HoaDonService {
         LocalDateTime startDate = null;
         LocalDateTime endDate = null;
 
-        // Tính toán ngày bắt đầu và ngày kết thúc theo khoảng thời gian
-        switch (timePeriod.toLowerCase()) {
-            case "day":
-                startDate = LocalDate.now().atStartOfDay(); // Chuyển LocalDate thành LocalDateTime
-                endDate = startDate.plusDays(1).minusNanos(1); // Đến hết ngày hôm nay
-                break;
-            case "week":
-                startDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay(); // Bắt đầu từ đầu tuần
-                endDate = startDate.plusWeeks(1).minusNanos(1); // Đến hết tuần này
-                break;
-            case "month":
-                startDate = LocalDate.now().withDayOfMonth(1).atStartOfDay(); // Bắt đầu từ ngày 1 của tháng
-                endDate = startDate.plusMonths(1).minusNanos(1); // Đến hết tháng này
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid time period: " + timePeriod);
+            // Tính toán ngày bắt đầu và ngày kết thúc theo khoảng thời gian
+            switch (timePeriod.toLowerCase()) {
+                case "day":
+                    startDate = LocalDate.now().atStartOfDay(); // Chuyển LocalDate thành LocalDateTime
+                    endDate = startDate.plusDays(1).minusNanos(1); // Đến hết ngày hôm nay
+                    break;
+                case "week":
+                    startDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay(); // Bắt đầu từ đầu tuần
+                    endDate = startDate.plusWeeks(1).minusNanos(1); // Đến hết tuần này
+                    break;
+                case "month":
+                    startDate = LocalDate.now().withDayOfMonth(1).atStartOfDay(); // Bắt đầu từ ngày 1 của tháng
+                    endDate = startDate.plusMonths(1).minusNanos(1); // Đến hết tháng này
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid time period: " + timePeriod);
+            }
+
+            // Gọi repository để tính tổng doanh thu
+            return repository.calculateRevenueByStatusAndDateRange(startDate, endDate);
         }
 
-        // Gọi repository để tính tổng doanh thu
-        return repository.calculateRevenueByStatusAndDateRange(startDate, endDate);
+
+//    public Double getTotalRevenueForDay(LocalDate date) {
+//        String formattedDate = date.toString(); // Chuyển LocalDate thành chuỗi yyyy-MM-dd
+//        Double totalRevenue = repository.calculateTotalRevenueForDay(formattedDate);
+//        return totalRevenue != null ? totalRevenue : 0.0;
+//    }
+
+    // Lấy doanh thu theo khoảng thời gian
+    public List<Map<String, Object>> getRevenueForPeriod(String startDate, String endDate) {
+        // Chuyển đổi String thành LocalDateTime
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE; // Định dạng yyyy-MM-dd
+        LocalDateTime start = LocalDateTime.parse(startDate + "T00:00:00"); // Cộng thêm thời gian mặc định là 00:00:00
+        LocalDateTime end = LocalDateTime.parse(endDate + "T23:59:59"); // Cộng thêm thời gian mặc định là 23:59:59
+
+        // Gọi repository để lấy kết quả
+        List<Object[]> result = repository.calculateTotalRevenueForPaidInvoices(start, end);
+
+        // Khởi tạo danh sách trả về
+        List<Map<String, Object>> revenueData = new ArrayList<>();
+
+        // Duyệt qua các dòng dữ liệu
+        for (Object[] row : result) {
+            Map<String, Object> dataMap = new HashMap<>();
+
+            // Chuyển đổi ngày từ Object sang String nếu cần thiết
+            String date = "";
+            if (row[0] instanceof LocalDateTime) {
+                date = ((LocalDateTime) row[0]).format(DateTimeFormatter.ISO_LOCAL_DATE); // Định dạng yyyy-MM-dd
+            } else {
+                date = row[0].toString(); // Nếu không phải LocalDateTime, chuyển qua String
+            }
+
+            dataMap.put("date", date);
+
+            // Gán tổng doanh thu vào map
+            Object totalRevenue = row[1];
+            if (totalRevenue instanceof Double) {
+                dataMap.put("totalRevenue", totalRevenue);
+            } else {
+                // Nếu doanh thu không phải là Double, ép kiểu về Double
+                dataMap.put("totalRevenue", Double.valueOf(totalRevenue.toString()));
+            }
+
+            // Thêm dữ liệu vào danh sách
+            revenueData.add(dataMap);
+        }
+
+        return revenueData;
     }
+
+
+    public List<HoaDon> getHoaDonByToday() {
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1).minusSeconds(1);
+
+        return repository.findAllByToday(startOfDay, endOfDay);
     }
+
+    //auto cancel bill
+    @Transactional
+    public void updateUnpaidInvoices() {
+        LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);
+            System.out.println("Ngày giới hạn: " + twoDaysAgo);
+
+        int updatedCount = repository.updateUnpaidInvoicesToCanceled(twoDaysAgo);
+        System.out.println("Đã hủy " + updatedCount + " hóa đơn chưa thanh toán quá hạn!");
+    }
+}
